@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Releasenotes — Ketentestmonitor PGB</title>
+  <link rel="preconnect" href="https://hhrfrawgrsxrmgxzfewd.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=33">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .rn-item { display:flex; gap:20px; padding:16px 0; border-bottom:1px solid var(--border); }
+    .rn-item:last-child { border-bottom:none; }
+    .rn-date { flex-shrink:0; width:110px; font-size:12px; font-weight:700; color:var(--text-muted); padding-top:2px; }
+    .rn-desc { font-size:14px; color:var(--text); line-height:1.6; }
+  </style>
+</head>
+<body>
+  <!-- ZIN Header -->
+  <div style="background:#ffffff;">
+    <img src="ZinBanner.png" alt="Zorginstituut Nederland" style="width:100%; max-width:960px; display:block; margin:0 auto;">
+  </div>
+  <style>
+    .topnav { background: #39870c !important; }
+    .topnav-logo { color: #fff !important; }
+    .topnav a { color: rgba(255,255,255,0.85) !important; }
+    .topnav a:hover, .topnav a.active { color: #fff !important; }
+  </style>
+
+  <nav class="topnav">
+        <a href="home.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
+    <a href="dashboard.html" id="navDashboardLink" style="display:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <div class="nav-dropdown">
+      <a href="app.html" id="navKetentestLink">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>
+        Ketentest <span class="nav-dropdown-caret">▾</span>
+      </a>
+      <div class="nav-dropdown-menu">
+        <span id="navScenariosSlot"></span>
+                <a href="flow.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Flow</a>
+        <a href="deelname.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg> Deelname</a>
+        <span id="navNotifBerichtenSlot"></span>
+        <a href="admin.html?tab=nok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Bevindingen</a>
+        <a href="admin.html?tab=entrycriteria"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Entry-criteria</a>
+        <a href="kerngegevens.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Kerngegevens</a>
+      </div>
+    </div>
+    <a href="mijn-acties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Voortgang</a>
+    <div class="nav-dropdown" id="adminLink" style="display:none;">
+      <a href="admin.html">Beheer <span class="nav-dropdown-caret">▾</span></a>
+      <div class="nav-dropdown-menu">
+        <a href="admin.html?tab=organisations">Organisaties</a>
+        <a href="admin.html?tab=users">Gebruikers</a>
+        <a href="admin.html?tab=notifications">Notificaties</a>
+        <a href="admin.html?tab=berichten">Berichten</a>
+        <a href="admin.html?tab=kenmerken">Functionele kenmerken</a>
+        <a href="admin.html?tab=ketentests">Ketentesten</a>
+        <a href="admin.html?tab=scenarios">Scenario's beheren</a>
+        <a href="admin.html?tab=logboek">Logboek</a>
+      </div>
+    </div>
+    <span id="ketentestLabel" style="display:none; background:rgba(255,255,255,0.15); color:#fff; border-radius:99px; padding:4px 14px; font-size:12px; font-weight:700; margin-left:16px;"></span>
+      <span id="nokBadge" style="display:none; background:#fee2e2; color:#7f1d1d; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='admin.html?tab=nok'" title="Klik om naar Bevindingen te gaan"></span>
+      <span id="mijnActiesBadge" style="display:none; background:#dbeafe; color:#1e3a8a; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='mijn-acties.html'" title="Klik om naar Mijn acties te gaan"></span>
+      <span id="gonogoBadge" style="display:none; background:#fef3c7; color:#92400e; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='dashboard.html'" title="Klik om naar het Dashboard te gaan"></span>
+    <div class="topnav-right">
+      <span class="topnav-user" id="navUser"></span>
+      <span id="navOrg" style="background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85); border-radius:99px; padding:2px 10px; font-size:12px; margin-left:4px;"></span>
+      <button class="btn btn-ghost btn-sm" style="color:rgba(255,255,255,0.7); display:none;" onclick="doLogout()" id="logoutBtn">
+        Uitloggen
+      </button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>Releasenotes</h1>
+        <p>Overzicht van wijzigingen aan het ketentestplatform, meest recente eerst.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:8px 24px;" id="releaseNotesList">
+      <!-- Nieuwste bovenaan. Elke regel: {datum, beschrijving} -->
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js?v=48"></script>
+  <script>
+    // ============================================================
+    // RELEASENOTES
+    // Statische lijst — er wordt bewust geen database voor gebruikt.
+    // Nieuwe regels worden bovenaan toegevoegd zodra een wijziging is
+    // afgesproken om te loggen.
+    // ============================================================
+    const RELEASE_NOTES = [
+      { datum: '2026-07-14', beschrijving: 'Releasenotes-pagina toegevoegd, bereikbaar via de link "Releasenotes" onderaan de pagina.' },
+      { datum: '2026-07-14', beschrijving: "Testscenario's filteren: het filter 'Mijn organisatie' op de Ketentest-pagina is gesplitst in 'Mijn organisatie (Acceptant)' en 'Mijn organisatie (Verantwoordelijk)'." },
+      { datum: '2026-07-14', beschrijving: 'Flows filteren: dezelfde Acceptant/Verantwoordelijk-filtering toegevoegd aan de Flow-pagina, inclusief het filteren van de flowlijst zelf (met organisatiekeuze voor beheerders).' },
+      { datum: '2026-07-14', beschrijving: 'Deelname omgebouwd naar flow-niveau in plaats van scenarioniveau, met de mogelijkheid om een eerder gemaakte keuze weer te wissen.' },
+      { datum: '2026-07-14', beschrijving: 'Deelname omgebouwd naar een full-page overzicht per flow, met een gescheiden weergave van "nog te beoordelen" en "al beoordeeld".' },
+      { datum: '2026-07-14', beschrijving: 'Notificaties en berichten (automatisch herkende tags) zichtbaar gemaakt per scenario in de Deelname-pagina.' },
+      { datum: '2026-07-14', beschrijving: 'Dashboard-export omgebouwd van CSV naar PDF, en uitgebreid met alle onderdelen van het dashboard (kerncijfers, verdeling activiteiten, NOK-overzicht, voortgang per organisatie/flow, en meer).' },
+      { datum: '2026-07-18', beschrijving: 'Notificaties en berichten zichtbaar gemaakt in het detailpaneel van de Flow-pagina (ontbrak daar nog, in tegenstelling tot Ketentest en Deelname).' },
+      { datum: '2026-07-18', beschrijving: 'Uniek nummer per flow toegevoegd: verplicht en aanpasbaar via het potloodje op de Flow-pagina, zichtbaar overal waar de flownaam wordt getoond (Flow, Deelname, Dashboard en gastweergave).' },
+      { datum: '2026-07-18', beschrijving: "Bij Beheer → Testscenario's is nu per scenario zichtbaar in welke flow (nummer + naam) het is opgenomen, als dat van toepassing is." },
+      { datum: '2026-07-18', beschrijving: "Flownummer ook zichtbaar bij Ketentest → Testscenario's (voor gebruikers), in dezelfde stijl als bij Beheer." },
+      { datum: '2026-07-18', beschrijving: 'Beheer → Notificaties: vaste volgorde (Nieuw, Gewijzigd, Verwijderd, Informatief) op beide subtabbladen, aparte tabs Zorgaanbieder/Zorgkantoor, "Gebruik in scenario\'s" hernoemd naar "Gebruikt in scenario\'s", en scenario-codes daar zijn nu klikbare links naar het scenario. De flow-badge bij Ketentest → Testscenario\'s is ook klikbaar geworden en opent de bijbehorende flow.' },
+      { datum: '2026-07-18', beschrijving: 'Gebruikers hebben nu ook (alleen-lezen) toegang tot Notificaties, bereikbaar via een nieuwe link in het Ketentest-menu.' },
+      { datum: '2026-07-18', beschrijving: 'Notificaties uitgebreid met Documentatie en Trigger (beide vrije tekstvelden, zichtbaar voor iedereen), en het subtabblad "Beheren" is hernoemd naar "Overzicht".' },
+      { datum: '2026-07-18', beschrijving: 'Berichten beheren (Beheer → Berichten): per automatisch herkende berichtcode kan nu documentatie en een trigger worden vastgelegd, zichtbaar voor iedereen bij Ketentest → Berichten via een detailknop.' },
+      { datum: '2026-07-18', beschrijving: 'Berichten: naam-veld toegevoegd (de beheerder vult zelf een naam in — de code diende voorheen ten onrechte als weergavenaam) en het trigger-veld verwijderd, want dat kenmerk is niet van toepassing op berichten.' },
+      { datum: '2026-07-18', beschrijving: "Bugfix: de link 'Testscenario's' stond onterecht zichtbaar voor gewone gebruikers op admin.html, waardoor zij per ongeluk op de Notificaties-tab konden belanden in plaats van bij Ketentest → Testscenario's." },
+      { datum: '2026-07-18', beschrijving: "Belangrijke bugfix: een CSS-regel forceerde 'display: flex !important' op elke link in een menu-dropdown, waardoor JavaScript rolafhankelijke menu-items (Testscenario's, Dashboard, Notificaties/Berichten) niet meer daadwerkelijk kon verbergen — ze bleven altijd zichtbaar, ongeacht de rol van de gebruiker of het model van de ketentest. Nu opgelost." },
+      { datum: '2026-07-18', beschrijving: "Compleet NOK-opvolgingsproces toegevoegd: verplichte reden en eigenaar via een pop-up bij het instellen van een NOK, een voortgangsstatus (Nieuw/In behandeling/Opgelost/Hertest OK), automatische afronding bij hertest, een signaleringsbadge voor gebruikers, en een nieuw beheerscherm 'NOK-opvolging' met volledig overzicht en doorlooptijd." },
+      { datum: '2026-07-18', beschrijving: 'NOK-opvolging uitgebreid: eenmaal geregistreerd kan een NOK niet meer worden uitgezet, het overzicht is nu ook bereikbaar voor Gebruikers/Managers via het Ketentest-menu, mutatierechten zijn beperkt tot de eigenaar-organisatie (afgedwongen tot in de database), en het overzicht toont nu ook verantwoordelijke/acceptant en meerdere opmerkingen per NOK.' },
+      { datum: '2026-07-18', beschrijving: 'NOK-opvolging verder verfijnd: badge-klik opent nu direct het overzicht, "NOK-opvolging" staat nu onderaan het Ketentest-menu met een icoon, status springt automatisch naar "In behandeling" bij een eerste opmerking, en het kiezen van "Opgelost, wacht op hertest" vraagt nu eerst een verplichte toelichting via een pop-up.' },
+      { datum: '2026-07-18', beschrijving: 'Bevindingen herontworpen: elke NOK krijgt een uniek nummer (B1, B2, ...), status is vergrendeld na "Opgelost, wacht op hertest" (afgedwongen tot in de database), scenario\'s zijn nu klikbaar vanuit het overzicht, en een hertest vraagt de acceptant nu een bevestigingsvraag — bij een mislukte hertest wordt een nieuwe, zichtbaar gekoppelde bevinding vastgelegd.' },
+      { datum: '2026-07-29', beschrijving: "Export naar Excel en PDF toegevoegd bij Deelname: exporteer de eigen flows (met daaronder de bijbehorende scenario's) inclusief deelname-status." },
+      { datum: '2026-07-30', beschrijving: 'Nieuwe pagina "Mijn acties" toegevoegd: persoonlijk overzicht van wat je nu zelf moet doen en waar je op een andere partij wacht, met een visuele stappenketen per scenario, een signaleringsbadge in de navigatiebalk, en op het Dashboard een nieuwe kaart "Wie is nu aan zet?" per organisatie.' },
+      { datum: '2026-08-13', beschrijving: "Functionele kenmerken per scenario toegevoegd: de beheerder kan herbruikbare velden definiëren (tekst, numeriek met validatie, datum, keuzelijst, of een slimme zorgkantoorcode-lijst) en per scenario koppelen; de betrokken organisaties vullen samen de daadwerkelijke waarden in bij het scenario." },
+    ];
+
+    function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+    function formatDatum(iso) {
+      const d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function renderReleaseNotes() {
+      const el = document.getElementById('releaseNotesList');
+      if (!RELEASE_NOTES.length) {
+        el.innerHTML = '<p class="empty-dash" style="padding:20px 0;">Nog geen releasenotes.</p>';
+        return;
+      }
+      // Sorteer op datum (nieuwste eerst); bij een gelijke datum wint de
+      // regel die het laatst aan de lijst is toegevoegd (dus onderaan in
+      // RELEASE_NOTES = bovenaan in het overzicht).
+      const sorted = RELEASE_NOTES.map((r, i) => ({ ...r, _i: i }))
+        .sort((a, b) => b.datum.localeCompare(a.datum) || b._i - a._i);
+      el.innerHTML = sorted.map(r => `
+        <div class="rn-item">
+          <div class="rn-date">${esc(formatDatum(r.datum))}</div>
+          <div class="rn-desc">${esc(r.beschrijving)}</div>
+        </div>`).join('');
+    }
+
+    renderReleaseNotes();
+
+    // Als er een sessie is, tonen we naam/ketentest en het echte
+    // uitlogknopje — maar zonder in te loggen af te dwingen, want deze
+    // pagina is bewust ook zonder sessie te bekijken.
+    let effectiefOrgId = null;
+
+    (async () => {
+      const user = await getCurrentUser();
+      if (!user) return;
+      startIdleTimeoutWatcher(); // ook op deze pagina automatisch uitloggen bij inactiviteit
+      const profile = await getUserProfile(user.id);
+      refreshGlobalNokBadge(profile?.organisation_id);
+      refreshGonogoBadge(profile?.organisation_id, profile?.role);
+      refreshMijnActiesBadge(profile?.organisation_id);
+      document.getElementById('navUser').textContent = profile?.name || user.email;
+      effectiefOrgId = await renderNavOrgSwitcher(profile);
+      document.getElementById('logoutBtn').style.display = '';
+      if (profile?.role === 'admin') {
+        document.getElementById('adminLink').style.display = '';
+      }
+      const scenariosSlot = document.getElementById('navScenariosSlot');
+      if (scenariosSlot) scenariosSlot.innerHTML = scenariosLinkHtml(profile?.role, false);
+      updateKetentestHoofdlink(profile?.role, false);
+      const navDashboardLink = document.getElementById('navDashboardLink');
+      if (navDashboardLink && ['admin','manager','softwareleverancier'].includes(profile?.role)) navDashboardLink.style.display = '';
+      await renderActiveKetentestLabel();
+    })();
+
+    async function doLogout() {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <!-- ZIN Footer -->
+  <footer style="background:#39870c; margin-top:48px; padding:40px 24px;">
+    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; align-items:start;">
+      <div>
+        <p style="font-size:20px; font-style:italic; color:#fff; font-weight:400; line-height:1.5;">Ketentest platform<br>voor PGB</p>
+      </div>
+      <div>
+        <p style="font-size:14px; font-weight:600; color:#fff; margin-bottom:12px;">Service</p>
+        <p style="font-size:13px; color:rgba(255,255,255,0.85); line-height:2;">
+          Zorginstituut Nederland<br>
+          <a href="https://www.istandaarden.nl" style="color:rgba(255,255,255,0.85); text-decoration:none;">iStandaarden</a><br>
+          <a href="https://www.zinl.nl" style="color:rgba(255,255,255,0.85); text-decoration:none;">zinl.nl</a>
+        </p>
+      </div>
+      <div>
+        <p style="font-size:14px; font-weight:600; color:#fff; margin-bottom:12px;">Over deze tool</p>
+        <p style="font-size:13px; color:rgba(255,255,255,0.85); line-height:2;">
+          Ketentestmonitor PGB<br>
+          Versie 0.9<br>
+          <a href="releasenotes.html" style="color:rgba(255,255,255,0.85); text-decoration:none;">Releasenotes</a>
+        </p>
+      </div>
+    </div>
+    <div style="max-width:1100px; margin:24px auto 0; padding-top:16px; border-top:1px solid rgba(255,255,255,0.2);">
+      <p style="font-size:12px; color:rgba(255,255,255,0.6);">© Zorginstituut Nederland</p>
+    </div>
+  </footer>
+
+</body>
+</html>

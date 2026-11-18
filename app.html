@@ -1,0 +1,2678 @@
+<!DOCTYPE html>
+<!-- v3 -->
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ketentestmonitor PGB</title>
+  <link rel="preconnect" href="https://hhrfrawgrsxrmgxzfewd.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=33">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .activity-row { display: grid; grid-template-columns: 32px 110px 1fr 110px minmax(220px, auto); gap: 0; align-items: center; }
+    .activity-row > div { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .activity-row:last-child > div { border-bottom: none; }
+    .activity-header { display: grid; grid-template-columns: 32px 110px 1fr 110px minmax(220px, auto); gap: 0; background: var(--surface); }
+    .activity-header > div { padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
+    .result-toggle { display: flex; gap: 5px; align-items: center; flex-wrap: nowrap; min-width: 220px; width: max-content; }
+    .rtbtn { border: 1.5px solid; border-radius: var(--radius); padding: 4px 9px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .rtbtn-ok        { background: #f0fdf4; color: #86efac; border-color: #86efac; }
+    .rtbtn-ok:hover  { background: #dcfce7; color: #16a34a; border-color: #16a34a; }
+    .rtbtn-ok.active { background: #16a34a; color: #fff;    border-color: #16a34a; }
+    .rtbtn-nok        { background: #fff5f5; color: #fca5a5; border-color: #fca5a5; }
+    .rtbtn-nok:hover  { background: #fee2e2; color: #dc2626; border-color: #dc2626; }
+    .rtbtn-nok.active { background: #dc2626; color: #fff;    border-color: #dc2626; }
+    .notes-mini { width: 100%; font-size: 12px; padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--radius); resize: vertical; min-height: 52px; font-family: inherit; color: var(--text); background: var(--white); }
+    .notes-mini:focus { outline: none; border-color: var(--brand-mid); }
+    .scenario-progress { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+    .scenario-progress-bar { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+    .note-icon-btn {
+      border: 1.5px solid #d1d5db;
+      background: #f9fafb;
+      cursor: pointer;
+      padding: 5px 8px;
+      border-radius: 6px;
+      display: inline-flex !important;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: #9ca3af;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      min-width: 32px;
+      min-height: 28px;
+    }
+    .note-icon-btn.has-note {
+      color: #2563a8;
+      background: #e8f0fb;
+      border-color: #93c5fd;
+      font-weight: 600;
+    }
+    .note-icon-btn.no-note { color: #9ca3af; }
+    .note-icon-btn:hover { background: #f3f4f6; border-color: #9ca3af; color: #374151; }
+    /* Notificatie labels */
+    .notif-label { display:inline-flex; align-items:center; gap:4px; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:600; letter-spacing:0.03em; white-space:nowrap; cursor:pointer; transition:opacity 0.15s; border:1px solid transparent; }
+    .notif-label:hover { opacity:0.75; }
+    .notif-label.active-filter { outline:2px solid currentColor; outline-offset:1px; }
+    .notif-nieuw     { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+    .notif-gewijzigd { background:#fef3c7; color:#92400e; border-color:#fcd34d; }
+    .notif-verwijderd{ background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+    .notif-informatief{ background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+    .notif-labels-wrap { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+
+    /* Scenario tabs */
+    /* Notificatie labels */
+    .notif-label { display:inline-flex; align-items:center; gap:4px; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:600; letter-spacing:0.03em; white-space:nowrap; cursor:pointer; transition:opacity 0.15s; border:1px solid transparent; }
+    .notif-label:hover { opacity:0.75; }
+    .notif-label.active-filter { outline:2px solid currentColor; outline-offset:1px; }
+    .notif-nieuw     { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+    .notif-gewijzigd { background:#fef3c7; color:#92400e; border-color:#fcd34d; }
+    .notif-verwijderd{ background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+    .notif-informatief{ background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+    .notif-labels-wrap { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+    .bericht-label { display:inline-flex; align-items:center; gap:4px; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:600; letter-spacing:0.03em; white-space:nowrap; font-family:monospace; background:#ede9fe; color:#5b21b6; border:1px solid #c4b5fd; }
+    .proces-label { display:inline-flex; align-items:center; gap:4px; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:600; letter-spacing:0.03em; white-space:nowrap; background:#ccfbf1; color:#0f766e; border:1px solid #5eead4; }
+
+    /* Scenario tabs */
+    .scenario-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; flex-wrap: nowrap; }
+    .scenario-tab { padding: 9px 18px; font-size: 13px; font-weight: 500; color: var(--text-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; margin-bottom: -1px; }
+    .scenario-tab:hover { color: var(--text); }
+    .scenario-tab.active { color: var(--brand-mid); border-bottom-color: var(--brand-mid); font-weight: 600; }
+    .scenario-tab .tab-count { display: inline-block; background: var(--surface); border: 1px solid var(--border); border-radius: 99px; font-size: 11px; padding: 0px 6px; margin-left: 5px; font-weight: 500; }
+    .scenario-tab.active .tab-count { background: var(--brand-light); border-color: var(--brand-light); color: var(--brand-mid); }
+
+    /* Rijweergave (i.p.v. tegels) */
+    .sc-row-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+    .sc-row {
+      display: grid;
+      grid-template-columns: 76px minmax(180px, 1fr) 82px 108px 90px 110px minmax(140px, 280px);
+      align-items: center; column-gap: 14px; row-gap: 8px;
+      background: var(--white); border: 1px solid var(--border);
+      border-left-width: 4px; border-left-style: solid;
+      border-radius: var(--radius-lg); padding: 12px 16px;
+      cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .sc-row:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.09); }
+    .sc-row-code { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .sc-row-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .sc-row-bar-wrap { width: 100%; }
+    .sc-row-flow { text-align: center; }
+    .sc-row-flow a { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#166534; font-size:11px; font-weight:700; border-radius:6px; padding:4px 10px; white-space:nowrap; text-decoration:none; }
+    .sc-row-flow a:hover { background:#bbf7d0; }
+    .sc-row-pills { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+    .tile-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; display: flex; gap: 1px; }
+    .tile-bar-ok { background: #16a34a; border-radius: 99px; transition: width 0.3s; }
+    .tile-bar-nok { background: #dc2626; border-radius: 99px; transition: width 0.3s; }
+    .tile-counts { display: flex; gap: 8px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+    @media (max-width: 900px) {
+      .sc-row { grid-template-columns: 76px minmax(140px, 1fr) 82px 108px; }
+      .sc-row-bar-wrap, .tile-counts { grid-column: 2 / span 3; }
+      .sc-row-pills { grid-column: 1 / -1; justify-content: flex-start; }
+    }
+    .org-pill { background: var(--brand-light); color: var(--brand); border-radius: 99px; padding: 2px 9px; font-size: 11px; font-weight: 500; white-space: nowrap; text-align: center; }
+    .my-org { background: var(--accent-light); color: #0f6e56; }
+    @media (max-width: 700px) {
+      .activity-row, .activity-header { grid-template-columns: 1fr; }
+      .activity-header { display: none; }
+    }
+    .export-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <!-- ZIN Header -->
+  <div style="background:#ffffff;">
+    <img src="ZinBanner.png" alt="Zorginstituut Nederland" style="width:100%; max-width:960px; display:block; margin:0 auto;">
+  </div>
+  <style>
+    .topnav { background: #39870c !important; }
+    .topnav-logo { color: #fff !important; }
+    .topnav a { color: rgba(255,255,255,0.85) !important; }
+    .topnav a:hover, .topnav a.active { color: #fff !important; }
+  </style>
+
+
+  <nav class="topnav">
+        <a href="home.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
+    <a href="dashboard.html" id="navDashboardLink" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> Dashboard</a>
+    <div class="nav-dropdown">
+      <a href="app.html" class="active" id="navKetentestLink">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>
+        Ketentest <span class="nav-dropdown-caret">▾</span>
+      </a>
+      <div class="nav-dropdown-menu">
+        <span id="navScenariosSlot"></span>
+                <a href="flow.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Flow
+        </a>
+        <a href="deelname.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+          Deelname
+        </a>
+        <span id="navNotifBerichtenSlot"></span>
+        <a href="admin.html?tab=nok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Bevindingen</a>
+        <a href="admin.html?tab=entrycriteria"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Entry-criteria</a>
+        <a href="kerngegevens.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Kerngegevens</a>
+      </div>
+    </div>
+    <a href="mijn-acties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Voortgang</a>
+    <div class="nav-dropdown" id="adminLink" style="display:none;">
+      <a href="admin.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Beheer <span class="nav-dropdown-caret">▾</span></a>
+      <div class="nav-dropdown-menu">
+        <a href="admin.html?tab=organisations">Organisaties</a>
+        <a href="admin.html?tab=users">Gebruikers</a>
+        <a href="admin.html?tab=notifications">Notificaties</a>
+        <a href="admin.html?tab=berichten">Berichten</a>
+        <a href="admin.html?tab=kenmerken">Functionele kenmerken</a>
+        <a href="admin.html?tab=ketentests">Ketentesten</a>
+        <a href="admin.html?tab=scenarios">Scenario's beheren</a>
+        <a href="admin.html?tab=logboek">Logboek</a>
+      </div>
+    </div>
+    <div class="topnav-right">
+      <span id="ketentestLabel" style="display:none; background:rgba(255,255,255,0.15); color:#fff; border-radius:99px; padding:4px 14px; font-size:12px; font-weight:700;"></span>
+      <span class="topnav-user" id="navUser"></span>
+      <span id="navOrg" style="background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85); border-radius:99px; padding:2px 10px; font-size:12px; margin-left:4px;"></span>
+      <span id="nokBadge" style="display:none; background:#fee2e2; color:#7f1d1d; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='admin.html?tab=nok'" title="Klik om naar Bevindingen te gaan"></span>
+      <span id="mijnActiesBadge" style="display:none; background:#dbeafe; color:#1e3a8a; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='mijn-acties.html'" title="Klik om naar Mijn acties te gaan"></span>
+      <span id="gonogoBadge" style="display:none; background:#fef3c7; color:#92400e; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='dashboard.html'" title="Klik om naar het Dashboard te gaan"></span>
+      <button class="btn btn-ghost btn-sm" style="color:rgba(255,255,255,0.7);" onclick="doLogout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Uitloggen
+      </button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div id="alert" class="alert" style="display:none;"></div>
+    <div id="entryCriteriaBanner" style="display:none; background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; border-radius:var(--radius); padding:14px 18px; margin-bottom:16px; font-size:13px; align-items:center; gap:10px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Jouw organisatie mag nog geen activiteiten op OK/NOK zetten — de entry-criteria zijn nog niet (volledig) goedgekeurd door de beheerder. Ga naar <strong>Beheer → Entry-criteria</strong> om de vragen te beantwoorden.</span>
+    </div>
+
+    <div id="noKetentestState" style="display:none;" class="empty-state" style="padding:60px 20px;">
+      <p style="font-size:14px;">Er is nog geen ketentest aangemaakt. Vraag de beheerder om er een aan te maken via Beheer → Ketentesten.</p>
+    </div>
+
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid" style="display:none;">
+      <div class="stat-card">
+        <div class="stat-label">Totaal scenario's</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Geslaagd</div>
+        <div class="stat-value green" id="statOk">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Mislukt</div>
+        <div class="stat-value red" id="statNok">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Open</div>
+        <div class="stat-value orange" id="statOpen">0</div>
+      </div>
+    </div>
+
+    <!-- Filter + export -->
+    <div class="export-bar" style="margin-bottom:20px;" id="filterBar" style="display:none;">
+      <div style="display:flex; gap:6px; flex-wrap:wrap; flex:1">
+        <button class="btn btn-outline btn-sm active-filter" id="f-all" onclick="setFilter('all', this)">Alle</button>
+        <button class="btn btn-outline btn-sm" id="f-open" onclick="setFilter('open', this)">Open</button>
+        <button class="btn btn-outline btn-sm" id="f-ok" onclick="setFilter('ok', this)">Geslaagd</button>
+        <button class="btn btn-outline btn-sm" id="f-nok" onclick="setFilter('nok', this)">Mislukt</button>
+        <button class="btn btn-outline btn-sm" id="f-mine" onclick="setFilter('mine', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="15" y1="22" x2="15" y2="2"/><line x1="4" y1="7" x2="9" y2="7"/><line x1="4" y1="12" x2="9" y2="12"/><line x1="15" y1="7" x2="20" y2="7"/><line x1="15" y1="12" x2="20" y2="12"/></svg> Mijn organisatie (Acceptant)</button>
+        <button class="btn btn-outline btn-sm" id="f-mine-verantwoordelijk" onclick="setFilter('mine-verantwoordelijk', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="15" y1="22" x2="15" y2="2"/><line x1="4" y1="7" x2="9" y2="7"/><line x1="4" y1="12" x2="9" y2="12"/><line x1="15" y1="7" x2="20" y2="7"/><line x1="15" y1="12" x2="20" y2="12"/></svg> Mijn organisatie (Verantwoordelijk)</button>
+        <div id="notifFilterIndicator" style="display:none;">
+          <button class="btn btn-sm" id="notifFilterBtn" onclick="setNotifFilter(null)"
+            style="font-weight:600; display:flex; align-items:center; gap:6px; border:2px solid currentColor;">
+            <span id="notifFilterLabel"></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="exportCSV()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exporteren (CSV)</button>
+      <button class="btn btn-outline btn-sm" onclick="exportPDF()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Exporteren (PDF)</button>
+    </div>
+
+    <!-- Progress overall -->
+    <div class="progress-wrap" style="margin-bottom:24px;" id="overallProgress">
+      <div class="progress-bar" id="overallBar" style="width:0%"></div>
+    </div>
+
+    <!-- Scenario list -->
+    <div id="scenarioList">
+      <div class="empty-state"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite; opacity:0.4;"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg><p>Laden...</p></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js?v=48"></script>
+  <script>
+    function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+    let currentUser = null, currentProfile = null, effectiefOrgId = null;
+    // Kenmerk-groepen die in deze ketentest gebruikt mogen worden (null = tabel ontbreekt → vaste standaardgroepen)
+    let kenmerkGroepenActief = null;
+    let indicatieAlsKenmerk = false; // true zodra de groep 'Indicatie' bestaat: Grondslag/ZZP-code zijn dan gewone kenmerken
+    const KENMERK_GROEPEN_STANDAARD_APP = [
+      { sleutel: 'toewijzing', titel: 'Toewijzing', soort: 'herhaalbaar' },
+      { sleutel: 'regierol', titel: 'Regierol', soort: 'herhaalbaar' },
+      { sleutel: 'leveringperiode', titel: 'Leveringperiode', soort: 'herhaalbaar' },
+      { sleutel: 'behandelingperiode', titel: 'Behandelingperiode', soort: 'herhaalbaar' },
+      { sleutel: 'verzoekaanbieder', titel: 'VerzoekAanbieder', soort: 'herhaalbaar' },
+      { sleutel: 'uitstelperiode', titel: 'Uitstelperiode', soort: 'eenmalig' },
+      { sleutel: 'afstel', titel: 'Afstel', soort: 'eenmalig' },
+      { sleutel: 'verzoek', titel: 'Verzoek', soort: 'eenmalig' },
+    ];
+    // Alle kenmerkblokken (behalve Algemeen/Indicatiebesluit) in de volgorde van de groepen, alleen voor groepen die aan deze ketentest zijn gekoppeld
+    function renderKenmerkGroepBlokken(scenarioId) {
+      return (kenmerkGroepenActief || KENMERK_GROEPEN_STANDAARD_APP)
+        .filter(g => g.soort !== 'algemeen' && !(g.sleutel === 'indicatie' && !isStartVanFlow(scenarioId)))
+        .map(g => g.soort === 'herhaalbaar' ? renderHerhaalbaarBlok(scenarioId, g.sleutel, esc(g.titel)) : renderEenmaligBlok(scenarioId, g.sleutel, esc(g.titel)))
+        .join('');
+    }
+    let orgIdsVanKetentest = null; // Set met organisatie-id's gekoppeld aan de actieve ketentest (null = onbekend → alle organisaties)
+    let scenarios = [], activities = [], results = {}, allOrgs = [], latestBevindingByActivity = {};
+    let kenmerkDefinities = [], scenarioKenmerkInstanties = [], scenarioKenmerkWaarden = [], zorgkantoorcodes = [];
+    let functioneleProcessen = [], scenarioFunctioneleProcessen = [];
+    let entryCriteriaVraagOrgs = [], entryCriteriaGoedkeuring = [];
+    let kerngegevensUzoviAgb = [], kerngegevensPostcodes = [], indicatieGrondslagen = [], indicatieZzpCodes = [], indicatiebesluiten = [], kerngegevensFictieveBsn = [];
+
+    // Een organisatie is geblokkeerd (mag geen OK/NOK zetten) als er
+    // minstens 1 entry-criteria-vraag aan haar is toegewezen, en die nog
+    // niet is goedgekeurd door de beheerder. Zonder toegewezen vragen is
+    // er niets te blokkeren.
+    function isOrgEntryCriteriaGeblokkeerd(orgId) {
+      if (!orgId) return false;
+      const heeftVragen = entryCriteriaVraagOrgs.some(x => x.organisation_id === orgId);
+      if (!heeftVragen) return false;
+      const goedkeuring = entryCriteriaGoedkeuring.find(g => g.organisation_id === orgId);
+      return goedkeuring?.status !== 'goedgekeurd';
+    }
+    // Welke blokken staan in bewerkmodus? Sleutel is de instantie-id,
+    // of 'algemeen-<scenarioId>' voor het algemene blok. Puur
+    // UI-state, niet opgeslagen — een blok met al ingevulde waarden
+    // toont standaard compact (alleen-lezen).
+    const kenmerkEditMode = new Set();
+    let activeFilter = 'all';
+    let activeKetentest = null;
+    const autosaveTimers = {};
+
+    (async () => {
+      currentUser = await requireAuth();
+      if (!currentUser) return;
+      currentProfile = await getUserProfile(currentUser.id);
+
+      document.getElementById('navUser').textContent = currentProfile?.name || currentUser.email;
+      effectiefOrgId = await renderNavOrgSwitcher(currentProfile);
+      if (currentProfile?.role === 'admin') {
+        document.getElementById('adminLink').style.display = '';
+      }
+      const scenariosSlot = document.getElementById('navScenariosSlot');
+      if (scenariosSlot) scenariosSlot.innerHTML = scenariosLinkHtml(currentProfile?.role, false);
+      updateKetentestHoofdlink(currentProfile?.role, false);
+      const navDashboardLink = document.getElementById('navDashboardLink');
+      if (navDashboardLink && ['admin','manager','softwareleverancier'].includes(currentProfile?.role)) navDashboardLink.style.display = '';
+
+      await renderActiveKetentestLabel();
+      const result = await ensureActiveKetentest();
+      if (!result) {
+        document.getElementById('noKetentestState').style.display = '';
+        return;
+      }
+      activeKetentest = result.active;
+
+      await loadData();
+      document.getElementById('statsGrid').style.display = '';
+      document.getElementById('filterBar').style.display = '';
+      refreshNokBadge();
+
+      // Automatisch een scenario openen als er via de URL naar verwezen wordt
+      // (bijv. vanuit Beheer → Notificaties → Gebruikt in scenario's).
+      const openParam = new URLSearchParams(window.location.search).get('scenario');
+      if (openParam) {
+        const target = scenarios.find(s => s.id === openParam);
+        if (target) activeTabPrefix = getScenarioPrefix(target.code);
+      }
+
+      renderAll();
+
+      if (openParam && scenarios.some(s => s.id === openParam)) {
+        toggleScenario(openParam);
+        setTimeout(() => {
+          document.getElementById('detail-panel-' + openParam)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 50);
+      }
+    })();
+
+    let flowNodes = [], flowEdges = [], scenarioFlowMap = {};
+
+    async function loadData() {
+      if (!activeKetentest) return;
+      const kid = activeKetentest.id;
+
+      // Laadvolgorde: alles wat NIET van de scenario-id's afhangt wordt
+      // meteen gestart en loopt parallel; de queries die wél scenario-id's
+      // nodig hebben starten zodra de scenario's binnen zijn (terwijl de
+      // rest nog bezig is). Voorheen liep dit als een keten van ~7
+      // opeenvolgende netwerkstappen, waarvan de meeste onafhankelijk waren.
+      const pOrgs = sb.from('organisations').select('*');
+      const pGroepen = Promise.all([
+        sb.from('kenmerk_groepen').select('*').order('volgorde'),
+        sb.from('kenmerk_groep_ketentesten').select('groep_id').eq('ketentest_id', kid),
+      ]).then(([g, k]) => {
+        if (g.error || k.error) { kenmerkGroepenActief = null; indicatieAlsKenmerk = false; return; }
+        indicatieAlsKenmerk = (g.data || []).some(x => x.sleutel === 'indicatie');
+        const toegestaan = new Set((k.data || []).map(x => x.groep_id));
+        kenmerkGroepenActief = (g.data || []).filter(x => x.soort === 'algemeen' || toegestaan.has(x.id));
+      }, () => { kenmerkGroepenActief = null; indicatieAlsKenmerk = false; });
+      // Koppeling organisatie ↔ ketentest (alleen voor de keuzelijst bij een nieuwe bevinding); fout/ontbrekende tabel = alle organisaties
+      sb.from('organisation_ketentest_access').select('organisation_id').eq('ketentest_id', kid)
+        .then(r => { orgIdsVanKetentest = r.error ? null : new Set((r.data || []).map(k => k.organisation_id)); }, () => { orgIdsVanKetentest = null; });
+      const pScenarios = sb.from('scenarios').select('*').eq('ketentest_id', kid).order('code');
+      const pNotif = loadNotificationDefs();
+      const pOnafhankelijk = Promise.all([
+        fetchAllRows((from, to) => sb.from('activity_results').select('*').order('id').range(from, to)),
+        fetchAllRows((from, to) => sb.from('flow_nodes').select('*').eq('ketentest_id', kid).order('id').range(from, to)),
+        fetchAllRows((from, to) => sb.from('flow_edges').select('*').eq('ketentest_id', kid).order('id').range(from, to)),
+        sb.from('flows').select('*').eq('ketentest_id', kid),
+        fetchAllRows((from, to) => sb.from('bevindingen').select('*').eq('ketentest_id', kid).order('created_at', { ascending: false }).order('id').range(from, to)),
+        sb.from('kenmerk_definities').select('*').eq('ketentest_id', kid).order('volgorde'),
+        sb.from('organisatie_zorgkantoorcodes').select('*'),
+        sb.from('functionele_processen').select('*').eq('ketentest_id', kid).order('naam'),
+        sb.from('entry_criteria_vragen').select('id').eq('ketentest_id', kid),
+        sb.from('entry_criteria_goedkeuring').select('*').eq('ketentest_id', kid),
+        // Data voor het Indicatiebesluit-formulier (alleen relevant bij startscenario's van een flow)
+        sb.from('kerngegevens_uzovi_agb').select('*').eq('ketentest_id', kid),
+        sb.from('kerngegevens_whitelist_postcodes').select('*').eq('ketentest_id', kid),
+        sb.from('indicatie_grondslagen').select('*').eq('ketentest_id', kid).order('waarde'),
+        sb.from('indicatie_zzp_codes').select('*').eq('ketentest_id', kid).order('waarde'),
+        fetchAllRows((from, to) => sb.from('kerngegevens_fictieve_bsn').select('*').eq('ketentest_id', kid).order('id').range(from, to)),
+      ]);
+
+      pOnafhankelijk.catch(() => {}); // voorkomt een 'unhandled rejection'-melding als dit pas later wordt afgewacht
+      const { data: scenarioData } = await pScenarios;
+      scenarios = scenarioData || [];
+      const scenarioIds = scenarios.map(s => s.id);
+
+      if (!scenarioIds.length) {
+        // Niets meer af te wachten; de al gestarte queries lopen zonder gevolgen af.
+        const { data: orgData } = await pOrgs;
+        allOrgs = orgData || [];
+        await pNotif;
+        activities = []; results = {}; flowNodes = []; flowEdges = []; scenarioFlowMap = {}; latestBevindingByActivity = {};
+        kenmerkDefinities = []; scenarioKenmerkInstanties = []; scenarioKenmerkWaarden = []; zorgkantoorcodes = [];
+        return;
+      }
+
+      // Tweede golf: hangt af van scenarioIds en start meteen.
+      const pActivities = fetchAllRows((from, to) => sb.from('activities').select('*, organisations!activities_organisation_id_fkey(id, name, code)').in('scenario_id', scenarioIds).order('sort_order').order('id').range(from, to));
+      const pKi = fetchAllRows((from, to) => sb.from('scenario_kenmerk_instanties').select('*').in('scenario_id', scenarioIds).order('volgnummer').order('id').range(from, to));
+      const pSfp = fetchAllRows((from, to) => sb.from('scenario_functionele_processen').select('*').in('scenario_id', scenarioIds).order('id').range(from, to));
+      const pIbz = fetchAllRows((from, to) => sb.from('indicatiebesluiten').select('*').in('scenario_id', scenarioIds).order('id').range(from, to));
+
+      const [orgRes, onafhankelijk, a, ki, sfp, ibz] = await Promise.all([pOrgs, pOnafhankelijk, pActivities, pKi, pSfp, pIbz]);
+      await pNotif;
+      await pGroepen;
+      const [r, fn, fe, fl, bv, kd, zk, fp, ecv, ecg, kua, kpc, ig, izz, fbsn] = onafhankelijk;
+      allOrgs = orgRes.data || [];
+
+      // Derde golf: hangt af van uitkomsten van de vorige (vraag-id's, instantie-id's).
+      const entryCriteriaVraagIds = (ecv.data || []).map(v => v.id);
+      scenarioKenmerkInstanties = ki.data || [];
+      const instantieIds = scenarioKenmerkInstanties.map(i => i.id);
+      const [eco, kw] = await Promise.all([
+        entryCriteriaVraagIds.length
+          ? sb.from('entry_criteria_vraag_organisaties').select('*').in('vraag_id', entryCriteriaVraagIds)
+          : Promise.resolve({ data: [] }),
+        // Lange id-lijst in stukken (zie fetchInChunks), met een uniek-makende sortering.
+        fetchInChunks(instantieIds, ids => sb.from('scenario_kenmerk_waarden').select('*').in('instantie_id', ids).order('instantie_id').order('kenmerk_definitie_id')),
+      ]);
+
+      entryCriteriaVraagOrgs = eco.data || [];
+      entryCriteriaGoedkeuring = ecg.data || [];
+      kerngegevensUzoviAgb = kua.data || [];
+      kerngegevensPostcodes = kpc.data || [];
+      indicatieGrondslagen = ig.data || [];
+      indicatieZzpCodes = izz.data || [];
+      indicatiebesluiten = ibz.data || [];
+      kerngegevensFictieveBsn = fbsn.data || [];
+
+      functioneleProcessen = fp.data || [];
+      scenarioFunctioneleProcessen = sfp.data || [];
+      kenmerkDefinities = kd.data || [];
+      scenarioKenmerkWaarden = kw.data || [];
+      zorgkantoorcodes = zk.data || [];
+      flowNodes = fn.data || [];
+      flowEdges = fe.data || [];
+      scenarioFlowMap = {};
+      const flowById = {};
+      (fl.data || []).forEach(f => flowById[f.id] = f);
+      flowNodes.forEach(n => { if (flowById[n.flow_id]) scenarioFlowMap[n.scenario_id] = flowById[n.flow_id]; });
+      // Resolve acceptant_org manually to avoid Supabase alias issues
+      activities = (a.data || []).map(act => ({
+        ...act,
+        acceptant_org: allOrgs.find(o => o.id === act.acceptant_org_id) || null
+      }));
+      results = {};
+      const actIds = new Set(activities.map(a => a.id));
+      (r.data || []).forEach(x => { if (actIds.has(x.activity_id)) results[x.activity_id] = x; });
+
+      // Laatste bevinding per activiteit (eerste in de lijst, want al
+      // gesorteerd op created_at aflopend) — bepaalt de knop-status.
+      latestBevindingByActivity = {};
+      (bv.data || []).forEach(b => {
+        if (actIds.has(b.activity_id) && !latestBevindingByActivity[b.activity_id]) {
+          latestBevindingByActivity[b.activity_id] = b;
+        }
+      });
+    }
+
+    // Is de organisatie van de ingelogde gebruiker betrokken (verantw.
+    // of acceptant van minstens 1 activiteit) bij dit scenario? Puur
+    // voor de weergave — de database (RLS) is de echte grens.
+    function isBetrokkenBijScenario(scenarioId) {
+      const myOrgId = currentProfile?.organisation_id;
+      if (!myOrgId) return false;
+      return activities.some(a => a.scenario_id === scenarioId && (a.organisation_id === myOrgId || a.acceptant_org_id === myOrgId));
+    }
+
+    // Elfproef-controle voor een BSN (of vergelijkbaar 9-cijferig
+    // nummer): som van cijfer × gewicht (9..2, dan -1 voor het laatste
+    // cijfer) moet deelbaar zijn door 11.
+    function klopElfproef(waarde) {
+      const cijfers = String(waarde).replace(/\D/g, '');
+      if (cijfers.length !== 9) return false;
+      let som = 0;
+      for (let i = 0; i < 8; i++) som += parseInt(cijfers[i]) * (9 - i);
+      som += parseInt(cijfers[8]) * -1;
+      return som % 11 === 0;
+    }
+
+    const ICOON_POTLOOD = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+    const ICOON_PRULLENBAK = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+
+    // Niet zomaar de eerste activiteit van een scenario pakken — die is
+    // vaak geen zorgkantoor. Zoek in volgorde de eerste activiteit
+    // waarvan de verantwoordelijke organisatie daadwerkelijk
+    // zorgkantoorcodes heeft.
+    function toggleKenmerkEditMode(key, scenarioId, aan) {
+      if (aan) kenmerkEditMode.add(key); else kenmerkEditMode.delete(key);
+      rerenderScenario(scenarioId);
+    }
+
+    function bepaalVerantwZorgkantoorOrgId(scenarioId) {
+      const activiteitenOpVolgorde = activities.filter(a => a.scenario_id === scenarioId).sort((a, b) => a.sort_order - b.sort_order);
+      for (const a of activiteitenOpVolgorde) {
+        const kandidaatOrgId = a.organisation_id || a.organisations?.id;
+        if (kandidaatOrgId && zorgkantoorcodes.some(z => z.organisation_id === kandidaatOrgId)) {
+          return kandidaatOrgId;
+        }
+        if (a.acceptant_org_id && zorgkantoorcodes.some(z => z.organisation_id === a.acceptant_org_id)) {
+          return a.acceptant_org_id;
+        }
+      }
+      return null;
+    }
+
+    // Waarden van de kenmerken in de groep 'Indicatie' (o.a. Grondslag, ZZP-code) van het startscenario, als [naam, waarde]-paren
+    function indicatieKenmerkWaarden(startScenarioId) {
+      const instantie = scenarioKenmerkInstanties.find(i => i.scenario_id === startScenarioId && i.groep === 'indicatie');
+      if (!instantie) return [];
+      const waarden = getWaardenVoorInstantie(instantie.id);
+      return kenmerkDefinities.filter(d => d.groep === 'indicatie').sort((a, b) => (a.volgorde ?? 0) - (b.volgorde ?? 0))
+        .map(d => [d.naam, waarden[d.id]]);
+    }
+
+    // Toont bij een startscenario van een flow het bewerkbare
+    // Indicatiebesluit-blok (bij latere scenario's: alleen-lezen weergave van dat van het startscenario) — dit heeft het losse 'Algemeen'-blok
+    // vervangen (Clientnaam + de rest van de indicatiegegevens staan nu
+    // hier samen).
+    function renderIndicatiebesluitBlok(scenarioId) {
+      try {
+        return renderIndicatiebesluitBlokInner(scenarioId);
+      } catch (err) {
+        console.error('Fout bij renderen van Indicatiebesluit-blok voor scenario', scenarioId, ':', err);
+        return `<div style="margin:8px 0; padding:8px 14px; background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; border-radius:var(--radius); font-size:12px;">Er ging iets mis bij het tonen van het Indicatiebesluit-blok (zie browserconsole voor details).</div>`;
+      }
+    }
+
+    // Alleen-lezen weergave van de indicatiegegevens van het startscenario, voor
+    // scenario's verderop in de flow — zodat ook wie pas bij een later scenario
+    // betrokken is kan zien om welke indicatie het gaat. Bewerken kan alleen
+    // bij het startscenario zelf.
+    function renderIndicatiebesluitVanStartscenario(scenarioId) {
+      const startId = getStartScenarioId(scenarioId);
+      if (!startId || startId === scenarioId) return '';
+      const start = scenarios.find(x => x.id === startId);
+      const ib = indicatiebesluiten.find(x => x.scenario_id === startId);
+      const kop = `<span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Indicatiegegevens</span>
+        <span style="font-size:11px; color:var(--text-muted);">van startscenario ${start ? `<a href="app.html?scenario=${start.id}" target="_blank" style="color:inherit; font-weight:700;">${esc(start.code)}</a>` : ''}</span>`;
+      const kader = inhoud => `<div style="margin:8px 0; padding:8px 14px; background:#eef2ff; border:1px solid #c7d2fe; border-radius:var(--radius);" data-indicatiegegevens-start="${startId}">${inhoud}</div>`;
+      if (!ib) {
+        return kader(`<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px;">${kop}<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Nog niet ingevuld bij het startscenario.</span></div>`);
+      }
+      const datum = d => d ? new Date(d).toLocaleDateString('nl-NL') : '';
+      const velden = [
+        ['Clientnaam', start?.code], ['Fictief BSN', ib.fictief_bsn], ['Datum afgifte', datum(ib.datum_afgifte)], ['Datum ingang', datum(ib.datum_ingang)],
+        ['UZOVI', ib.uzovi], ['Adres', ib.adres],
+        ...(indicatieAlsKenmerk ? indicatieKenmerkWaarden(startId) : [['1e grondslag', ib.grondslag_1], ['2e grondslag', ib.grondslag_2], ['3e grondslag', ib.grondslag_3], ['4e grondslag', ib.grondslag_4], ['ZZP-code 1', ib.zzp_code_1], ['ZZP-code 2', ib.zzp_code_2]]),
+        ['VoorkeurClient', ib.voorkeur_client], ['UZOVI-uitvoerendZK', ib.uzovi_uitvoerend_zk], ['VoorkeurAanbieder', ib.voorkeur_aanbieder],
+      ].filter(([, w]) => w);
+      return kader(`<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin-bottom:8px;">${kop}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px 18px; font-size:12px;">${velden.map(([l, w]) => `<span>${esc(l)}: <strong>${esc(w)}</strong></span>`).join('')}</div>`);
+    }
+
+    function renderIndicatiebesluitBlokInner(scenarioId) {
+      if (!isStartVanFlow(scenarioId)) return renderIndicatiebesluitVanStartscenario(scenarioId);
+
+      const betrokken = isBetrokkenBijScenario(scenarioId) || currentProfile?.role === 'admin';
+      const bestaand = indicatiebesluiten.find(x => x.scenario_id === scenarioId);
+      const isNieuw = !bestaand;
+      const editKey = `indicatiebesluit-${scenarioId}`;
+      const inBewerkModus = kenmerkEditMode.has(editKey);
+
+      if (!inBewerkModus) {
+        if (isNieuw) {
+          return `<div style="margin:8px 0; padding:8px 14px; background:#eef2ff; border:1px solid #c7d2fe; border-radius:var(--radius); display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div style="display:flex; align-items:center; flex-wrap:wrap;">
+              <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Indicatiebesluit</span>
+              <span style="font-size:12px; color:var(--text-muted); font-style:italic; margin-left:10px;">Nog niet ingevuld.</span>
+            </div>
+            ${betrokken ? `<button class="btn btn-sm btn-outline" onclick="toggleKenmerkEditMode('${editKey}','${scenarioId}',true)">Invullen</button>` : ''}
+          </div>`;
+        }
+        return `<div style="margin:8px 0; padding:8px 14px; background:#eef2ff; border:1px solid #c7d2fe; border-radius:var(--radius); display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px; font-size:12px;">
+            <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Indicatiebesluit</span>
+            <span>Fictief BSN: <strong>${esc(bestaand.fictief_bsn || '—')}</strong></span>
+            <span>Afgifte: <strong>${bestaand.datum_afgifte ? new Date(bestaand.datum_afgifte).toLocaleDateString('nl-NL') : '—'}</strong></span>
+            <span>Ingang: <strong>${bestaand.datum_ingang ? new Date(bestaand.datum_ingang).toLocaleDateString('nl-NL') : '—'}</strong></span>
+            <span>UZOVI: <strong>${esc(bestaand.uzovi || '—')}</strong></span>
+          </div>
+          ${betrokken ? `<button class="btn btn-ghost btn-sm btn-icon" onclick="toggleKenmerkEditMode('${editKey}','${scenarioId}',true)" title="Bewerken">${ICOON_POTLOOD}</button>` : ''}
+        </div>`;
+      }
+
+      const scenario = scenarios.find(s => s.id === scenarioId);
+      const verantwOrgId = bepaalVerantwZorgkantoorOrgId(scenarioId);
+      const uzoviOpties = [...new Set(kerngegevensUzoviAgb.filter(r => r.organisation_id === verantwOrgId).map(r => r.uzovi_code))];
+      const alleUzoviOpties = [...new Set(kerngegevensUzoviAgb.map(r => r.uzovi_code))];
+      const huidigeUzovi = bestaand?.uzovi || '';
+      const adresOpties = [...new Set(kerngegevensPostcodes.filter(r => r.uzovi_code === huidigeUzovi).map(r => r.adres))];
+      const huidigeUzoviUitvoerend = bestaand?.uzovi_uitvoerend_zk || '';
+      const agbOpties = [...new Set(kerngegevensUzoviAgb.filter(r => r.uzovi_code === huidigeUzoviUitvoerend && r.agb_code).map(r => r.agb_code))];
+      const grondslagWaarden = indicatieGrondslagen.map(g => g.waarde);
+      const zzpWaarden = indicatieZzpCodes.map(z => z.waarde);
+
+      // Fictief BSN: alleen BSN's van de verantwoordelijke organisatie,
+      // en alleen die nog niet door een ánder indicatiebesluit worden
+      // gebruikt (een BSN mag maar 1x gebruikt worden) — het eigen,
+      // al gekozen BSN blijft wel gewoon zichtbaar bij het bewerken.
+      const gebruikteBsns = new Set(indicatiebesluiten.filter(x => x.scenario_id !== scenarioId && x.fictief_bsn).map(x => x.fictief_bsn));
+      const bsnOpties = kerngegevensFictieveBsn
+        .filter(b => b.organisation_id === verantwOrgId)
+        .map(b => b.bsn)
+        .filter(bsn => !gebruikteBsns.has(bsn) || bsn === bestaand?.fictief_bsn);
+
+      const labelStijl = 'font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.03em; display:flex; align-items:flex-end; min-height:26px; margin-bottom:2px; line-height:1.2;';
+      const veldStijl = 'width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px;';
+      const selectOpties = (waarden, huidig, placeholder) => `<option value="">${placeholder}</option>` + waarden.map(w => `<option value="${esc(w)}" ${w === huidig ? 'selected' : ''}>${esc(w)}</option>`).join('');
+
+      return `<div style="margin:8px 0; padding:14px; background:#eef2ff; border:1px solid #c7d2fe; border-radius:var(--radius);" data-indicatiebesluit-scenario="${scenarioId}">
+        <p style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px;">Indicatiebesluit</p>
+        <div id="indicatiebesluitAlert-${scenarioId}" class="alert" style="display:none; margin-bottom:10px;"></div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
+          <div style="width:190px;"><label style="${labelStijl}">Clientnaam</label><input type="text" value="${esc(scenario?.code || '')}" disabled style="${veldStijl} background:var(--surface); color:var(--text-muted);"></div>
+          <div style="width:170px;"><label style="${labelStijl}">Fictief BSN</label><select id="indFictiefBsn-${scenarioId}" style="${veldStijl}">${selectOpties(bsnOpties, bestaand?.fictief_bsn || '', bsnOpties.length ? '— kies —' : '— geen BSN\'s beschikbaar —')}</select></div>
+          <div style="width:170px;"><label style="${labelStijl}">Datum afgifte</label><input type="date" id="indDatumAfgifte-${scenarioId}" value="${bestaand?.datum_afgifte || ''}" style="${veldStijl}"></div>
+          <div style="width:170px;"><label style="${labelStijl}">Datum ingang</label><input type="date" id="indDatumIngang-${scenarioId}" value="${bestaand?.datum_ingang || ''}" style="${veldStijl}"></div>
+          <div style="width:170px;"><label style="${labelStijl}">UZOVI</label><select id="indUzovi-${scenarioId}" onchange="vulIndicatieAdresOpties('${scenarioId}')" style="${veldStijl}">${selectOpties(uzoviOpties, huidigeUzovi, '— kies —')}</select></div>
+          <div style="width:220px;"><label style="${labelStijl}">Adres</label><select id="indAdres-${scenarioId}" style="${veldStijl}">${selectOpties(adresOpties, bestaand?.adres || '', '— kies —')}</select></div>
+          ${!indicatieAlsKenmerk ? `<div style="width:170px;"><label style="${labelStijl}">1e grondslag</label><select id="indGrondslag1-${scenarioId}" style="${veldStijl}">${selectOpties(grondslagWaarden, bestaand?.grondslag_1 || '', '— geen —')}</select></div>` : ''}
+          ${!indicatieAlsKenmerk ? `<div style="width:170px;"><label style="${labelStijl}">2e grondslag</label><select id="indGrondslag2-${scenarioId}" style="${veldStijl}">${selectOpties(grondslagWaarden, bestaand?.grondslag_2 || '', '— geen —')}</select></div>` : ''}
+          ${!indicatieAlsKenmerk ? `<div style="width:170px;"><label style="${labelStijl}">3e grondslag</label><select id="indGrondslag3-${scenarioId}" style="${veldStijl}">${selectOpties(grondslagWaarden, bestaand?.grondslag_3 || '', '— geen —')}</select></div>` : ''}
+          ${!indicatieAlsKenmerk ? `<div style="width:170px;"><label style="${labelStijl}">4e grondslag</label><select id="indGrondslag4-${scenarioId}" style="${veldStijl}">${selectOpties(grondslagWaarden, bestaand?.grondslag_4 || '', '— geen —')}</select></div>` : ''}
+          ${!indicatieAlsKenmerk ? `<div style="width:170px;"><label style="${labelStijl}">ZZP-code 1</label><select id="indZzp1-${scenarioId}" style="${veldStijl}">${selectOpties(zzpWaarden, bestaand?.zzp_code_1 || '', '— geen —')}</select></div>` : ''}
+          ${!indicatieAlsKenmerk ? `<div style="width:170px;"><label style="${labelStijl}">ZZP-code 2</label><select id="indZzp2-${scenarioId}" style="${veldStijl}">${selectOpties(zzpWaarden, bestaand?.zzp_code_2 || '', '— geen —')}</select></div>` : ''}
+          <div style="width:190px;"><label style="${labelStijl}">VoorkeurClient</label><input type="text" id="indVoorkeurClient-${scenarioId}" value="${esc(bestaand?.voorkeur_client || '')}" style="${veldStijl}"></div>
+          <div style="width:170px;"><label style="${labelStijl}">UZOVI-uitvoerendZK</label><select id="indUzoviUitvoerend-${scenarioId}" onchange="vulIndicatieAgbOpties('${scenarioId}')" style="${veldStijl}">${selectOpties(alleUzoviOpties, huidigeUzoviUitvoerend, '— kies —')}</select></div>
+          <div style="width:190px;"><label style="${labelStijl}">VoorkeurAanbieder</label><select id="indVoorkeurAanbieder-${scenarioId}" style="${veldStijl}">${selectOpties(agbOpties, bestaand?.voorkeur_aanbieder || '', '— kies —')}</select></div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-sm btn-outline" onclick="toggleKenmerkEditMode('${editKey}','${scenarioId}',false)">Annuleren</button>
+          <button class="btn btn-sm btn-primary" onclick="saveIndicatiebesluit('${scenarioId}')">Opslaan</button>
+        </div>
+      </div>`;
+    }
+
+    function vulIndicatieAdresOpties(scenarioId) {
+      const uzoviWaarde = document.getElementById(`indUzovi-${scenarioId}`).value;
+      const select = document.getElementById(`indAdres-${scenarioId}`);
+      const opties = [...new Set(kerngegevensPostcodes.filter(r => r.uzovi_code === uzoviWaarde).map(r => r.adres))];
+      select.innerHTML = '<option value="">— kies —</option>' + opties.map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join('');
+    }
+
+    function vulIndicatieAgbOpties(scenarioId) {
+      const uzoviWaarde = document.getElementById(`indUzoviUitvoerend-${scenarioId}`).value;
+      const select = document.getElementById(`indVoorkeurAanbieder-${scenarioId}`);
+      const opties = [...new Set(kerngegevensUzoviAgb.filter(r => r.uzovi_code === uzoviWaarde && r.agb_code).map(r => r.agb_code))];
+      select.innerHTML = '<option value="">— kies —</option>' + opties.map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join('');
+    }
+
+    async function saveIndicatiebesluit(scenarioId) {
+      const alertId = `indicatiebesluitAlert-${scenarioId}`;
+      const veld = id => document.getElementById(`${id}-${scenarioId}`)?.value || null;
+
+      const payload = {
+        ketentest_id: activeKetentest.id,
+        scenario_id: scenarioId,
+        fictief_bsn: veld('indFictiefBsn'),
+        datum_afgifte: veld('indDatumAfgifte'),
+        datum_ingang: veld('indDatumIngang'),
+        uzovi: veld('indUzovi'),
+        adres: veld('indAdres'),
+        // Velden die voor deze ketentest uit staan worden niet aangeraakt (reeds ingevulde waarden blijven bewaard)
+        ...(!indicatieAlsKenmerk ? { grondslag_1: veld('indGrondslag1'), grondslag_2: veld('indGrondslag2'), grondslag_3: veld('indGrondslag3'), grondslag_4: veld('indGrondslag4'), zzp_code_1: veld('indZzp1'), zzp_code_2: veld('indZzp2') } : {}),
+        voorkeur_client: veld('indVoorkeurClient'),
+        uzovi_uitvoerend_zk: veld('indUzoviUitvoerend'),
+        voorkeur_aanbieder: veld('indVoorkeurAanbieder'),
+      };
+
+      const bestaand = indicatiebesluiten.find(x => x.scenario_id === scenarioId);
+      let resultaat;
+      if (bestaand) {
+        resultaat = await sb.from('indicatiebesluiten')
+          .update({ ...payload, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null })
+          .eq('id', bestaand.id).select().single();
+      } else {
+        resultaat = await sb.from('indicatiebesluiten')
+          .insert({ ...payload, created_by: currentUser?.id || null })
+          .select().single();
+      }
+
+      if (resultaat.error) { showAlert('Fout bij opslaan: ' + resultaat.error.message, 'error', alertId); return; }
+
+      const idx = indicatiebesluiten.findIndex(x => x.scenario_id === scenarioId);
+      if (idx !== -1) indicatiebesluiten[idx] = resultaat.data; else indicatiebesluiten.push(resultaat.data);
+
+      kenmerkEditMode.delete(`indicatiebesluit-${scenarioId}`);
+      rerenderScenario(scenarioId);
+    }
+
+    // ---- EENMALIGE BLOKKEN (max. 1x per scenario, generiek) ----
+    // Zelfde soort gedrag als 'Algemeen' (compact tonen als ingevuld,
+    // bewerkmodus als nieuw/leeg), maar zonder de Algemeen-specifieke
+    // Clientnaam/zorgkantoor/flow-overerving — gewoon een simpel blok
+    // dat maximaal 1x per scenario voorkomt. Toont zichzelf niet als er
+    // bij Beheer nog geen enkel veld voor deze groep is aangemaakt.
+    // Waarden van een instantie (bijv. een specifieke 'Toewijzing 1')
+    // ophalen als { kenmerk_definitie_id: waarde }-object.
+    function getWaardenVoorInstantie(instantieId) {
+      const waarden = {};
+      scenarioKenmerkWaarden.filter(w => w.instantie_id === instantieId).forEach(w => { waarden[w.kenmerk_definitie_id] = w.waarde; });
+      return waarden;
+    }
+
+    function heeftIngevuldeWaarden(waarden) {
+      return Object.values(waarden).some(w => w && String(w).trim());
+    }
+
+    // Rendert één invoerveld voor een kenmerk-definitie, afhankelijk van
+    // het veldtype. 'extraZorgkantoorCodes' wordt alleen door 'Algemeen'-
+    // achtige aanroepen gevuld voor veldtype 'zorgkantoorcode'; overige
+    // aanroepers geven hier gewoon [] door.
+    function renderKenmerkVeld(d, waarde, betrokken, extraZorgkantoorCodes) {
+      const labelStijl = 'font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.03em; display:flex; align-items:flex-end; min-height:26px; margin-bottom:2px; line-height:1.2;';
+      const veldStijl = 'width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px;';
+      const disabled = betrokken ? '' : 'disabled';
+
+      let inputHtml;
+      if (d.veldtype === 'datum') {
+        inputHtml = `<input type="date" data-kenmerk-id="${d.id}" value="${waarde || ''}" style="${veldStijl}" ${disabled}>`;
+      } else if (d.veldtype === 'keuzelijst') {
+        const opties = d.keuzelijst_waarden || [];
+        inputHtml = `<select data-kenmerk-id="${d.id}" style="${veldStijl}" ${disabled}>
+          <option value="">— kies —</option>
+          ${opties.map(o => `<option value="${esc(o)}" ${o === waarde ? 'selected' : ''}>${esc(o)}</option>`).join('')}
+        </select>`;
+      } else if (d.veldtype === 'zorgkantoorcode') {
+        if (!extraZorgkantoorCodes || !extraZorgkantoorCodes.length) {
+          inputHtml = `<div style="${veldStijl} background:var(--surface); color:var(--text-muted); font-style:italic; font-size:12px;">Geen zorgkantoorcodes bekend voor de verantwoordelijke organisatie</div>`;
+        } else {
+          inputHtml = `<select data-kenmerk-id="${d.id}" style="${veldStijl}" ${disabled}>
+            <option value="">— kies —</option>
+            ${extraZorgkantoorCodes.map(z => `<option value="${esc(z.code)}" ${z.code === waarde ? 'selected' : ''}>${esc(z.code)}</option>`).join('')}
+          </select>`;
+        }
+      } else if (d.veldtype === 'numeriek') {
+        inputHtml = `<input type="text" data-kenmerk-id="${d.id}" data-lengte="${d.validatie_lengte || ''}" data-elfproef="${d.validatie_elfproef ? '1' : '0'}" maxlength="${d.validatie_lengte || ''}" value="${esc(waarde || '')}" style="${veldStijl}" ${disabled}>`;
+      } else if (d.veldtype === 'uuid') {
+        // Handmatig in te vullen door de betrokken partijen (bijv. een
+        // UUID v4 zoals f47ac10b-58cc-4372-a567-0e02b2c3d479) — niet
+        // automatisch gegenereerd, alleen begrensd op max. 36 posities.
+        inputHtml = `<input type="text" data-kenmerk-id="${d.id}" maxlength="36" value="${esc(waarde || '')}" style="${veldStijl}" ${disabled}>`;
+      } else {
+        inputHtml = `<input type="text" data-kenmerk-id="${d.id}" value="${esc(waarde || '')}" style="${veldStijl}" ${disabled}>`;
+      }
+
+      return `<div style="width:190px;">
+        <label style="${labelStijl}">${esc(d.naam)}</label>
+        ${inputHtml}
+      </div>`;
+    }
+
+    // Compacte, alleen-lezen samenvatting van de ingevulde velden van een
+    // instantie — gebruikt in de ingeklapte weergave van een blok.
+    function renderKenmerkCompact(definities, waarden) {
+      return definities
+        .filter(d => waarden[d.id])
+        .map(d => `<span style="font-size:12px; color:var(--text-muted); white-space:nowrap;">${esc(d.naam)}: <strong style="color:var(--text);">${esc(waarden[d.id])}</strong></span>`)
+        .join('');
+    }
+
+    function renderEenmaligBlok(scenarioId, groep, titel) {
+      const definities = kenmerkDefinities.filter(d => d.groep === groep).sort((a, b) => (a.volgorde ?? 0) - (b.volgorde ?? 0));
+      if (!definities.length) return '';
+
+      const betrokken = isBetrokkenBijScenario(scenarioId) || currentProfile?.role === 'admin';
+      const instantie = scenarioKenmerkInstanties.find(i => i.scenario_id === scenarioId && i.groep === groep);
+      const waarden = instantie ? getWaardenVoorInstantie(instantie.id) : {};
+      const isNieuw = !heeftIngevuldeWaarden(waarden);
+      const editKey = `${groep}-${scenarioId}`;
+      // Anders dan 'Algemeen': begint niet automatisch in bewerkmodus
+      // als het nog leeg is — pas zodra de gebruiker daar zelf voor
+      // kiest, net als bij de herhaalbare blokken.
+      const inBewerkModus = kenmerkEditMode.has(editKey);
+
+      if (!inBewerkModus) {
+        if (isNieuw) {
+          return `<div style="margin:8px 0; padding:8px 14px; background:#f3f0fa; border:1px solid #d4c8ee; border-radius:var(--radius); display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div style="display:flex; align-items:center; flex-wrap:wrap;">
+              <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">${titel}</span>
+              <span style="font-size:12px; color:var(--text-muted); font-style:italic; margin-left:10px;">Nog niet ingevuld.</span>
+            </div>
+            ${betrokken ? `<button class="btn btn-sm btn-outline" onclick="toggleKenmerkEditMode('${editKey}','${scenarioId}',true)">Invullen</button>` : ''}
+          </div>`;
+        }
+        return `<div style="margin:8px 0; padding:8px 14px; background:#f3f0fa; border:1px solid #d4c8ee; border-radius:var(--radius); display:flex; align-items:center; justify-content:space-between; gap:12px;" data-instantie-groep="${groep}" data-instantie-id="${instantie ? instantie.id : ''}" data-scenario-id="${scenarioId}">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px;">
+            <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">${titel}</span>
+            ${renderKenmerkCompact(definities, waarden)}
+          </div>
+          ${betrokken ? `<button class="btn btn-ghost btn-sm btn-icon" style="flex-shrink:0;" onclick="toggleKenmerkEditMode('${editKey}','${scenarioId}',true)" title="Bewerken">${ICOON_POTLOOD}</button>` : ''}
+        </div>`;
+      }
+
+      const velden = definities.map(d => renderKenmerkVeld(d, waarden[d.id] || '', betrokken, [])).join('');
+      const actieKnoppen = betrokken
+        ? `<div style="display:flex; gap:8px;">
+            <button class="btn btn-sm btn-outline" onclick="toggleKenmerkEditMode('${editKey}','${scenarioId}',false)">Annuleren</button>
+            <button class="btn btn-sm btn-primary" onclick="saveEenmaligBlok('${scenarioId}','${groep}')">Opslaan</button>
+          </div>`
+        : '<span style="font-size:11px; color:var(--text-muted);">Alleen te bewerken door betrokken organisaties</span>';
+
+      return `<div style="margin:8px 0; padding:8px 14px; background:#f3f0fa; border:1px solid #d4c8ee; border-radius:var(--radius);" data-instantie-groep="${groep}" data-instantie-id="${instantie ? instantie.id : ''}" data-scenario-id="${scenarioId}">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+          <p style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin:0;">${titel}</p>
+          ${actieKnoppen}
+        </div>
+        <div id="kenmerkenAlert-${groep}-${scenarioId}" class="alert" style="display:none; margin-bottom:5px;"></div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px;">${velden}</div>
+      </div>`;
+    }
+
+    async function saveEenmaligBlok(scenarioId, groep) {
+      const alertId = `kenmerkenAlert-${groep}-${scenarioId}`;
+      const wrap = document.querySelector(`[data-instantie-groep="${groep}"][data-scenario-id="${scenarioId}"]`);
+      if (!wrap) return;
+      const inputs = wrap.querySelectorAll('[data-kenmerk-id]');
+      if (!valideerVelden(inputs, alertId)) return;
+
+      let instantie = scenarioKenmerkInstanties.find(i => i.scenario_id === scenarioId && i.groep === groep);
+      if (!instantie) {
+        const { data: { user } } = await sb.auth.getUser();
+        const { data, error } = await sb.from('scenario_kenmerk_instanties').insert({ scenario_id: scenarioId, groep, volgnummer: 1, created_by: user?.id || null }).select().single();
+        if (error) { showAlert('Fout bij aanmaken: ' + error.message, 'error', alertId); return; }
+        instantie = data;
+        scenarioKenmerkInstanties.push(instantie);
+      }
+
+      const gelukt = await slaWaardenOp(instantie.id, inputs, alertId);
+      if (!gelukt) return; // fout is al getoond; bewerkmodus blijft open zodat niets verloren gaat
+      kenmerkEditMode.delete(`${groep}-${scenarioId}`);
+      rerenderScenario(scenarioId);
+    }
+
+    // ---- HERHAALBARE BLOKKEN (Toewijzing / Regierol) ----
+    function renderHerhaalbaarBlok(scenarioId, groep, titel) {
+      const definities = kenmerkDefinities.filter(d => d.groep === groep).sort((a, b) => (a.volgorde ?? 0) - (b.volgorde ?? 0));
+      if (!definities.length) return '';
+
+      const betrokken = isBetrokkenBijScenario(scenarioId) || currentProfile?.role === 'admin';
+
+      const eigenInstanties = scenarioKenmerkInstanties
+        .filter(i => i.scenario_id === scenarioId && i.groep === groep)
+        .sort((a, b) => a.volgnummer - b.volgnummer);
+
+      let weergaveInstanties = eigenInstanties;
+      let geerfdVan = null;
+      let kanToevoegen = true;
+      let blokkeerBericht = null;
+      // De 'moet eerst bij een eerder scenario ingevuld zijn'-regel hoort
+      // specifiek bij Toewijzing/Regierol (continuïteit van zorg) — de
+      // overige, nieuwere blokken mogen altijd los ingevuld worden,
+      // ongeacht in welk scenario van de flow je zit.
+      const vereistVoorganger = groep === 'toewijzing' || groep === 'regierol';
+
+      if (!eigenInstanties.length) {
+        const bronScenarioId = vindVoorgangerMetData(scenarioId, groep);
+        if (bronScenarioId) {
+          geerfdVan = bronScenarioId;
+          weergaveInstanties = scenarioKenmerkInstanties
+            .filter(i => i.scenario_id === bronScenarioId && i.groep === groep)
+            .sort((a, b) => a.volgnummer - b.volgnummer);
+        } else if (vereistVoorganger && !isStartVanFlow(scenarioId) && isInFlow(scenarioId)) {
+          // Geen enkel eerder scenario in deze flow heeft hier al iets
+          // voor ingevuld — dan kan dit scenario ook nog niet beginnen.
+          kanToevoegen = false;
+          const startId = getStartScenarioId(scenarioId);
+          const startCode = startId ? (scenarios.find(s => s.id === startId)?.code || '') : '';
+          blokkeerBericht = `Kan hier nog niet worden ingevuld — vul dit eerst in bij een eerder scenario in deze flow${startCode ? `, te beginnen bij ${esc(startCode)}` : ''}.`;
+        }
+      }
+
+      // Elke instantie wordt opgesplitst in 'inhoud' (titel+velden) en
+      // 'iconen' (bewerken/verwijderen) — zodat de EERSTE, compacte
+      // instantie in dezelfde regel als het bloklabel getoond kan
+      // worden, wat het blok een stuk minder hoog maakt (het meest
+      // voorkomende geval is toch maar 1 instantie per scenario). Een
+      // instantie die zelf in bewerkmodus staat (kaart met
+      // invoervelden) leent zich daar niet voor en krijgt gewoon een
+      // eigen, volledige rij.
+      const instantieFragmenten = weergaveInstanties.map(inst => {
+        const waarden = getWaardenVoorInstantie(inst.id);
+
+        if (geerfdVan) {
+          return {
+            compact: true,
+            inhoud: `<strong style="font-size:12px; white-space:nowrap; color:var(--text-muted);">${titel} ${inst.volgnummer}</strong>${renderKenmerkCompact(definities, waarden)}`,
+            iconen: betrokken ? `<button class="btn btn-ghost btn-sm btn-icon" onclick="bewerkGeerfdeInstantie('${scenarioId}','${groep}','${inst.id}')" title="Bewerken (maakt een eigen kopie bij dit scenario)">${ICOON_POTLOOD}</button>
+                <button class="btn btn-ghost btn-sm btn-icon" style="color:var(--danger);" onclick="verwijderGeerfdeInstantie('${scenarioId}','${groep}','${inst.id}')" title="Verwijderen (maakt een eigen kopie bij dit scenario)">${ICOON_PRULLENBAK}</button>` : '',
+          };
+        }
+
+        const isNieuw = !heeftIngevuldeWaarden(waarden);
+        const inBewerkModus = isNieuw || kenmerkEditMode.has(inst.id);
+
+        if (!inBewerkModus) {
+          return {
+            compact: true,
+            inhoud: `<strong style="font-size:12px; white-space:nowrap;">${titel} ${inst.volgnummer}</strong>${renderKenmerkCompact(definities, waarden)}`,
+            iconen: betrokken ? `<button class="btn btn-ghost btn-sm btn-icon" onclick="toggleKenmerkEditMode('${inst.id}','${scenarioId}',true)" title="Bewerken">${ICOON_POTLOOD}</button>
+                <button class="btn btn-ghost btn-sm btn-icon" style="color:var(--danger);" onclick="verwijderBlokInstantie('${inst.id}','${scenarioId}','${groep}')" title="Verwijderen">${ICOON_PRULLENBAK}</button>` : '',
+          };
+        }
+
+        // Bewerkmodus: ruimere kaartlay-out met echte invoervelden —
+        // leent zich niet voor samenvoegen met de kop.
+        const velden = definities.map(d => renderKenmerkVeld(d, waarden[d.id] || '', betrokken, [])).join('');
+        const toewijzingKoppelVeld = groep === 'leveringperiode' ? (() => {
+          const toewijzingen = haalToewijzingInstantiesOp(scenarioId);
+          return `<div style="width:190px;">
+            <label style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.03em; display:flex; align-items:flex-end; min-height:26px; margin-bottom:2px; line-height:1.2;">Hoort bij toewijzing <span style="color:var(--danger);">*</span></label>
+            <select data-gekoppelde-instantie ${betrokken ? '' : 'disabled'} style="width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— kies —</option>
+              ${toewijzingen.map(t => `<option value="${t.id}" ${inst.gekoppelde_instantie_id === t.id ? 'selected' : ''}>Toewijzing ${t.volgnummer}</option>`).join('')}
+            </select>
+          </div>`;
+        })() : '';
+        const actieKnoppen = betrokken ? `<div style="display:flex; gap:8px;">
+            ${!isNieuw ? `<button class="btn btn-sm btn-outline" onclick="toggleKenmerkEditMode('${inst.id}','${scenarioId}',false)">Annuleren</button>` : ''}
+            <button class="btn btn-sm btn-outline" onclick="saveBlokInstantie('${inst.id}')">Opslaan</button>
+            <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" onclick="verwijderBlokInstantie('${inst.id}','${scenarioId}','${groep}')">Verwijderen</button>
+          </div>` : '';
+
+        return {
+          compact: false,
+          volledigeRij: `<div style="border:1px solid #eddca0; border-radius:var(--radius); padding:14px; margin-bottom:12px;" data-instantie-groep="${groep}" data-instantie-id="${inst.id}" data-scenario-id="${scenarioId}">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <strong style="font-size:13px;">${titel} ${inst.volgnummer}</strong>
+              ${actieKnoppen}
+            </div>
+            <div id="kenmerkenAlert-${inst.id}" class="alert" style="display:none; margin-bottom:10px;"></div>
+            <div style="display:flex; flex-wrap:wrap; gap:14px;">${toewijzingKoppelVeld}${velden}</div>
+          </div>`,
+        };
+      });
+
+      // De eerste instantie mag met de kop samengevoegd worden, als die
+      // compact is (dus niet in bewerkmodus).
+      const eersteInstantie = instantieFragmenten[0];
+      const eersteMagSamen = !!(eersteInstantie && eersteInstantie.compact);
+      const restInstanties = instantieFragmenten.slice(eersteMagSamen ? 1 : 0).map(f =>
+        f.compact
+          ? `<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:7px 4px; border-bottom:1px solid #eddca0;">
+              <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px;">${f.inhoud}</div>
+              <div style="display:flex; gap:2px; flex-shrink:0;">${f.iconen}</div>
+            </div>`
+          : f.volledigeRij
+      ).join('');
+
+      // Zoek de Ingangsdatum-/Einddatum-kenmerken van deze groep, voor de tijdlijn.
+      const ingangsdatumDef = definities.find(d => d.naam.toLowerCase().includes('ingangsdatum'));
+      const einddatumDef = definities.find(d => d.naam.toLowerCase().includes('einddatum'));
+
+      // Leveringperiode krijgt geen eigen tijdlijn — die hoort bij een
+      // toewijzing, en wordt in plaats daarvan als groen/rood bolletje
+      // getoond op de tijdlijn van die toewijzing (zie hieronder).
+      let markeringenPerToewijzing = null;
+      if (groep === 'toewijzing') {
+        const lpDefinities = kenmerkDefinities.filter(d => d.groep === 'leveringperiode');
+        const lpIngangsdatumDef = lpDefinities.find(d => d.naam.toLowerCase().includes('ingangsdatum'));
+        const lpEinddatumDef = lpDefinities.find(d => d.naam.toLowerCase().includes('einddatum'));
+        if (lpIngangsdatumDef && lpEinddatumDef) {
+          markeringenPerToewijzing = {};
+          weergaveInstanties.forEach(toewijzingInst => {
+            const gekoppeldeLeveringperiodes = scenarioKenmerkInstanties.filter(x => x.gekoppelde_instantie_id === toewijzingInst.id);
+            const markeringen = gekoppeldeLeveringperiodes.map(lp => {
+              const w = getWaardenVoorInstantie(lp.id);
+              const start = w[lpIngangsdatumDef.id] ? new Date(w[lpIngangsdatumDef.id]) : null;
+              const eind = w[lpEinddatumDef.id] ? new Date(w[lpEinddatumDef.id]) : null;
+              return { start, eind };
+            }).filter(m => m.start || m.eind);
+            if (markeringen.length) markeringenPerToewijzing[toewijzingInst.volgnummer] = markeringen;
+          });
+        }
+      }
+
+      const tijdlijn = (groep !== 'leveringperiode' && ingangsdatumDef && einddatumDef)
+        ? renderTijdlijn(weergaveInstanties, ingangsdatumDef.id, einddatumDef.id, titel, markeringenPerToewijzing)
+        : '';
+
+      const geerfdMelding = geerfdVan
+        ? `<span style="font-size:11px; color:var(--text-muted); font-style:italic; margin-left:10px;" title="Pas iets aan om hier een eigen versie van te maken.">(geërfd van eerder scenario)</span>`
+        : '';
+
+      const legeMelding = (!instantieFragmenten.length && !blokkeerBericht)
+        ? `<span style="font-size:12px; color:var(--text-muted); font-style:italic; margin-left:10px;">Nog geen ${titel.toLowerCase()} toegevoegd.</span>`
+        : '';
+
+      const toevoegenKnop = (betrokken && kanToevoegen) ? `<button class="btn btn-sm btn-outline" onclick="voegBlokToe('${scenarioId}','${groep}')">+ ${titel} toevoegen</button>` : '';
+
+      return `<div style="margin:8px 0; padding:8px 14px; background:#fdf6e8; border:1px solid #eddca0; border-radius:var(--radius);">
+        <div style="display:flex; justify-content:space-between; align-items:center; ${restInstanties ? 'margin-bottom:5px;' : ''}">
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px 16px;">
+            <p style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin:0;">${titel}</p>
+            ${geerfdMelding}${legeMelding}
+            ${eersteMagSamen ? eersteInstantie.inhoud : ''}
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+            ${eersteMagSamen ? `<div style="display:flex; gap:2px;">${eersteInstantie.iconen}</div>` : ''}
+            ${toevoegenKnop}
+          </div>
+        </div>
+        ${blokkeerBericht ? `<p style="font-size:12px; color:var(--text-muted); font-style:italic;">${blokkeerBericht}</p>` : ''}
+        ${restInstanties}
+        ${tijdlijn}
+      </div>`;
+    }
+
+    // Eenvoudige, proportionele tijdlijn op basis van ingangs-/
+    // einddatum van elke instantie in deze groep.
+    function renderTijdlijn(instanties, ingangsdatumDefId, einddatumDefId, titel, markeringenPerInstantie) {
+      const periodes = instanties.map(inst => {
+        const w = getWaardenVoorInstantie(inst.id);
+        const start = w[ingangsdatumDefId];
+        const eind = w[einddatumDefId];
+        return { volgnummer: inst.volgnummer, start: start ? new Date(start) : null, eind: eind ? new Date(eind) : null };
+      }).filter(p => p.start);
+
+      if (!periodes.length) return '';
+
+      const alleData = periodes.flatMap(p => [p.start, p.eind].filter(Boolean));
+      // Ook de data van gekoppelde markeringen (bijv. Leveringperiodes)
+      // meenemen in de schaalverdeling, zodat een bolletje nooit buiten
+      // de balk komt te vallen als die net iets eerder/later ligt.
+      if (markeringenPerInstantie) {
+        Object.values(markeringenPerInstantie).forEach(markeringen => {
+          markeringen.forEach(m => { if (m.start) alleData.push(m.start); if (m.eind) alleData.push(m.eind); });
+        });
+      }
+      let min = new Date(Math.min(...alleData));
+      let max = new Date(Math.max(...alleData));
+      // Open einde (geen einddatum): geef wat ruimte na de laatst bekende datum.
+      if (min.getTime() === max.getTime()) { max = new Date(min); max.setMonth(max.getMonth() + 1); }
+      const totaalMs = max - min;
+
+      const rijen = periodes.map((p, idx) => {
+        const eindVoorWeergave = p.eind || max;
+        const linksPct = totaalMs ? ((p.start - min) / totaalMs) * 100 : 0;
+        const breedtePct = totaalMs ? Math.max(((eindVoorWeergave - p.start) / totaalMs) * 100, 1.5) : 100;
+        const label = `${p.start.toLocaleDateString('nl-NL')} – ${p.eind ? p.eind.toLocaleDateString('nl-NL') : 'open'}`;
+        const tijdlijnLabel = idx === 0
+          ? `<span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; width:56px; flex-shrink:0;">Tijdlijn</span>`
+          : `<span style="width:56px; flex-shrink:0;"></span>`;
+
+        // Groen bolletje = ingangsdatum, rood bolletje = einddatum van
+        // een gekoppelde Leveringperiode, gepositioneerd op dezelfde
+        // schaal als de balk zelf.
+        const markeringen = markeringenPerInstantie?.[p.volgnummer] || [];
+        const bolletjes = markeringen.flatMap(m => {
+          const dots = [];
+          if (m.start) {
+            const pct = totaalMs ? ((m.start - min) / totaalMs) * 100 : 0;
+            dots.push(`<div style="position:absolute; top:50%; left:${pct}%; width:22px; height:22px; background:#16a34a; border:3px solid #fff; border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 1.5px #16a34a, 0 1px 3px rgba(0,0,0,0.25); z-index:2;" title="Leveringperiode — ingangsdatum: ${m.start.toLocaleDateString('nl-NL')}"></div>`);
+          }
+          if (m.eind) {
+            const pct = totaalMs ? ((m.eind - min) / totaalMs) * 100 : 0;
+            dots.push(`<div style="position:absolute; top:50%; left:${pct}%; width:22px; height:22px; background:#dc2626; border:3px solid #fff; border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 1.5px #dc2626, 0 1px 3px rgba(0,0,0,0.25); z-index:2;" title="Leveringperiode — einddatum: ${m.eind.toLocaleDateString('nl-NL')}"></div>`);
+          }
+          return dots;
+        }).join('');
+
+        return `<div style="display:flex; align-items:center; gap:10px; ${idx === 0 ? '' : 'margin-top:4px;'}">
+          ${tijdlijnLabel}
+          <span style="font-size:10.5px; color:var(--text-muted); width:80px; flex-shrink:0;">${titel} ${p.volgnummer}</span>
+          <div style="position:relative; flex:1; height:14px; background:#e8f0fb; border-radius:100px;">
+            <div style="position:absolute; top:0; left:${linksPct}%; width:${breedtePct}%; height:100%; background:#3f7fc4; border-radius:100px;" title="${label}"></div>
+            ${bolletjes}
+          </div>
+          <span style="font-size:10px; color:var(--text-muted); white-space:nowrap;">${label}</span>
+        </div>`;
+      }).join('');
+
+      return `<div style="margin-top:8px; padding-top:8px; border-top:1px solid #eddca0;">
+        ${rijen}
+      </div>`;
+    }
+
+    // Kopieert een reeks bron-instanties (met hun waarden) naar nieuwe,
+    // eigen instanties bij het doelscenario. Geeft een mapping terug
+    // van oude → nieuwe instantie, of null als er iets misging.
+    async function forkKenmerkenNaarScenario(doelScenarioId, bronInstanties, groep) {
+      const { data: { user } } = await sb.auth.getUser();
+      const mapping = {};
+      for (const bronInst of bronInstanties) {
+        const { data: nieuweInst, error } = await sb.from('scenario_kenmerk_instanties')
+          .insert({ scenario_id: doelScenarioId, groep, volgnummer: bronInst.volgnummer, created_by: user?.id || null })
+          .select().single();
+        if (error) { showAlert('Fout bij aanmaken eigen kopie: ' + error.message, 'error'); return null; }
+        scenarioKenmerkInstanties.push(nieuweInst);
+
+        const bronWaarden = getWaardenVoorInstantie(bronInst.id);
+        const rows = Object.entries(bronWaarden)
+          .filter(([, waarde]) => waarde)
+          .map(([kenmerk_definitie_id, waarde]) => ({
+            instantie_id: nieuweInst.id, kenmerk_definitie_id, waarde,
+            updated_by: user?.id || null, updated_at: new Date().toISOString(),
+          }));
+        if (rows.length) {
+          const { error: waardenError } = await sb.from('scenario_kenmerk_waarden').insert(rows);
+          if (waardenError) { showAlert('Fout bij kopiëren van waarden: ' + waardenError.message, 'error'); return null; }
+          rows.forEach(r => scenarioKenmerkWaarden.push(r));
+        }
+        mapping[bronInst.id] = nieuweInst;
+      }
+      return mapping;
+    }
+
+    async function bewerkGeerfdeInstantie(scenarioId, groep, instantieId) {
+      const bronScenarioId = vindVoorgangerMetData(scenarioId, groep);
+      if (!bronScenarioId) return;
+      const bronInstanties = scenarioKenmerkInstanties.filter(i => i.scenario_id === bronScenarioId && i.groep === groep);
+      const mapping = await forkKenmerkenNaarScenario(scenarioId, bronInstanties, groep);
+      if (!mapping) return;
+      const nieuweInst = mapping[instantieId];
+      if (nieuweInst) kenmerkEditMode.add(nieuweInst.id);
+      rerenderScenario(scenarioId);
+    }
+
+    async function verwijderGeerfdeInstantie(scenarioId, groep, instantieId) {
+      if (!confirm('Dit blok verwijderen? Dit maakt een eigen kopie van deze gegevens bij dit scenario aan (het eerdere scenario blijft ongewijzigd), zonder dit ene blok.')) return;
+      const bronScenarioId = vindVoorgangerMetData(scenarioId, groep);
+      if (!bronScenarioId) return;
+      const bronInstanties = scenarioKenmerkInstanties.filter(i => i.scenario_id === bronScenarioId && i.groep === groep);
+      const mapping = await forkKenmerkenNaarScenario(scenarioId, bronInstanties, groep);
+      if (!mapping) return;
+      const teVerwijderen = mapping[instantieId];
+      if (teVerwijderen) {
+        const { error } = await sb.from('scenario_kenmerk_instanties').delete().eq('id', teVerwijderen.id);
+        if (error) { showAlert('Fout bij verwijderen: ' + error.message, 'error'); return; }
+        scenarioKenmerkInstanties = scenarioKenmerkInstanties.filter(i => i.id !== teVerwijderen.id);
+        scenarioKenmerkWaarden = scenarioKenmerkWaarden.filter(w => w.instantie_id !== teVerwijderen.id);
+      }
+      rerenderScenario(scenarioId);
+    }
+
+    async function voegBlokToe(scenarioId, groep) {
+      const eigenInstanties = scenarioKenmerkInstanties.filter(i => i.scenario_id === scenarioId && i.groep === groep);
+      if (!eigenInstanties.length) {
+        // Nog geen eigen data: als er wel geërfde data is, eerst die
+        // volledig kopiëren, zodat het nieuwe blok een aanvulling wordt
+        // op wat al zichtbaar was (i.p.v. dat de geërfde data verdwijnt).
+        const bronScenarioId = vindVoorgangerMetData(scenarioId, groep);
+        if (bronScenarioId) {
+          const bronInstanties = scenarioKenmerkInstanties.filter(i => i.scenario_id === bronScenarioId && i.groep === groep);
+          const mapping = await forkKenmerkenNaarScenario(scenarioId, bronInstanties, groep);
+          if (!mapping) return;
+        }
+      }
+
+      const bestaande = scenarioKenmerkInstanties.filter(i => i.scenario_id === scenarioId && i.groep === groep);
+      const volgnummer = bestaande.length ? Math.max(...bestaande.map(i => i.volgnummer)) + 1 : 1;
+      const { data: { user } } = await sb.auth.getUser();
+      const { data, error } = await sb.from('scenario_kenmerk_instanties').insert({ scenario_id: scenarioId, groep, volgnummer, created_by: user?.id || null }).select().single();
+      if (error) { showAlert('Fout bij toevoegen: ' + error.message, 'error'); return; }
+      scenarioKenmerkInstanties.push(data);
+      kenmerkEditMode.add(data.id); // nieuw blok opent meteen in bewerkmodus
+      rerenderScenario(scenarioId);
+    }
+
+    async function verwijderBlokInstantie(instantieId, scenarioId, groep) {
+      if (!confirm('Dit blok (en de ingevulde waarden erin) verwijderen?')) return;
+      const { error } = await sb.from('scenario_kenmerk_instanties').delete().eq('id', instantieId);
+      if (error) { showAlert('Fout bij verwijderen: ' + error.message, 'error'); return; }
+      scenarioKenmerkInstanties = scenarioKenmerkInstanties.filter(i => i.id !== instantieId);
+      scenarioKenmerkWaarden = scenarioKenmerkWaarden.filter(w => w.instantie_id !== instantieId);
+      kenmerkEditMode.delete(instantieId);
+      rerenderScenario(scenarioId);
+    }
+
+    async function saveBlokInstantie(instantieId) {
+      const wrap = document.querySelector(`[data-instantie-id="${instantieId}"]`);
+      if (!wrap) return;
+      const scenarioId = wrap.dataset.scenarioId;
+      const groep = wrap.dataset.instantieGroep;
+      const alertId = `kenmerkenAlert-${instantieId}`;
+      const inputs = wrap.querySelectorAll('[data-kenmerk-id]');
+      if (!valideerVelden(inputs, alertId)) return;
+
+      const koppelSelect = wrap.querySelector('[data-gekoppelde-instantie]');
+      if (koppelSelect && !koppelSelect.value) {
+        showAlert('Kies bij welke toewijzing deze leveringperiode hoort.', 'error', alertId);
+        return;
+      }
+
+      const gelukt = await slaWaardenOp(instantieId, inputs, alertId);
+      if (!gelukt) return; // fout is al getoond; bewerkmodus blijft open zodat niets verloren gaat
+
+      if (koppelSelect) {
+        const { error } = await sb.from('scenario_kenmerk_instanties').update({ gekoppelde_instantie_id: koppelSelect.value }).eq('id', instantieId);
+        if (error) { showAlert('Fout bij koppelen aan toewijzing: ' + error.message, 'error', alertId); return; }
+        const inst = scenarioKenmerkInstanties.find(i => i.id === instantieId);
+        if (inst) inst.gekoppelde_instantie_id = koppelSelect.value;
+      }
+
+      kenmerkEditMode.delete(instantieId);
+      rerenderScenario(scenarioId);
+    }
+
+    function valideerVelden(inputs, alertId) {
+      for (const el of inputs) {
+        const waarde = el.value.trim();
+        if (!waarde) continue;
+        if (el.dataset.lengte) {
+          const lengte = parseInt(el.dataset.lengte);
+          if (!/^\d+$/.test(waarde) || waarde.length !== lengte) {
+            showAlert(`Vul een numerieke waarde van exact ${lengte} cijfers in.`, 'error', alertId);
+            return false;
+          }
+          if (el.dataset.elfproef === '1' && !klopElfproef(waarde)) {
+            showAlert('Dit nummer voldoet niet aan de elfproef — controleer het BSN.', 'error', alertId);
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    async function slaWaardenOp(instantieId, inputs, alertId) {
+      const { data: { user } } = await sb.auth.getUser();
+      const rows = [...inputs].map(el => ({
+        instantie_id: instantieId,
+        kenmerk_definitie_id: el.dataset.kenmerkId,
+        waarde: el.value.trim() || null,
+        updated_by: user?.id || null,
+        updated_at: new Date().toISOString(),
+      }));
+
+      const { error } = await sb.from('scenario_kenmerk_waarden').upsert(rows, { onConflict: 'instantie_id,kenmerk_definitie_id' });
+      if (error) { showAlert('Fout bij opslaan: ' + error.message, 'error', alertId); return false; }
+
+      rows.forEach(r => {
+        const idx = scenarioKenmerkWaarden.findIndex(w => w.instantie_id === r.instantie_id && w.kenmerk_definitie_id === r.kenmerk_definitie_id);
+        if (idx >= 0) scenarioKenmerkWaarden[idx] = r; else scenarioKenmerkWaarden.push(r);
+      });
+
+      showAlert('Opgeslagen.', 'success', alertId);
+      return true;
+    }
+
+    // Ververst alleen het kenmerken-gedeelte van een uitgeklapt scenario,
+    // zonder de rest van de pagina opnieuw op te bouwen.
+    function rerenderScenario(scenarioId) {
+      const houder = document.getElementById(`kenmerkenHouder-${scenarioId}`);
+      if (!houder) return;
+      houder.innerHTML = renderIndicatiebesluitBlok(scenarioId)
+        + renderKenmerkGroepBlokken(scenarioId);
+      // Staat de historie van dit scenario open, dan meteen bijwerken (de wijziging is net vastgelegd).
+      const historie = document.getElementById(`historieScenario-${scenarioId}`);
+      if (historie && historie.closest('details')?.open) laadHistorieIn('scenario', scenarioId, `historieScenario-${scenarioId}`);
+    }
+
+    function getClientnaam(scenarioId) {
+      const node = flowNodes.find(n => n.scenario_id === scenarioId);
+      const s = scenarios.find(x => x.id === scenarioId);
+      if (!node || !node.flow_id) return s?.code || '';
+
+      const startNode = flowNodes.find(n => n.flow_id === node.flow_id && n.is_start);
+      if (!startNode) return s?.code || '';
+
+      const startScenario = scenarios.find(x => x.id === startNode.scenario_id);
+      return startScenario?.code || s?.code || '';
+    }
+
+    // Vindt het startscenario van de flow waar dit scenario deel van
+    // uitmaakt (of null als dit scenario niet in een flow zit). Wordt
+    // gebruikt voor het 'Algemeen'-blok, dat altijd 1-op-1 het
+    // startscenario volgt.
+    function getStartScenarioId(scenarioId) {
+      const node = flowNodes.find(n => n.scenario_id === scenarioId);
+      if (!node || !node.flow_id) return null;
+      const startNode = flowNodes.find(n => n.flow_id === node.flow_id && n.is_start);
+      return startNode ? startNode.scenario_id : null;
+    }
+
+    // Loopt van dit scenario terug door de flow (via de edges) en
+    // geeft het dichtstbijzijnde vóórliggende scenario terug dat zelf
+    // al kenmerk-instanties heeft in de opgegeven groep. Gebruikt een
+    // brede zoektocht (BFS) zodat het ook bij vertakkingen werkt; bij
+    // meerdere even-dichtbije voorgangers met data wordt de eerst
+    // gevonden gebruikt.
+    // Welke Toewijzing-instanties horen bij dit scenario (eigen, of
+    // anders geërfd van een eerder scenario in de flow) — gebruikt om
+    // de 'Hoort bij toewijzing'-keuzelijst bij Leveringperiode te vullen.
+    function haalToewijzingInstantiesOp(scenarioId) {
+      const eigen = scenarioKenmerkInstanties
+        .filter(i => i.scenario_id === scenarioId && i.groep === 'toewijzing')
+        .sort((a, b) => a.volgnummer - b.volgnummer);
+      if (eigen.length) return eigen;
+      const bronScenarioId = vindVoorgangerMetData(scenarioId, 'toewijzing');
+      if (bronScenarioId) {
+        return scenarioKenmerkInstanties
+          .filter(i => i.scenario_id === bronScenarioId && i.groep === 'toewijzing')
+          .sort((a, b) => a.volgnummer - b.volgnummer);
+      }
+      return [];
+    }
+
+    function vindVoorgangerMetData(scenarioId, groep) {
+      const node = flowNodes.find(n => n.scenario_id === scenarioId);
+      if (!node || !node.flow_id) return null;
+
+      // LET OP: flow_edges.from_id/to_id verwijzen (ondanks de naam)
+      // rechtstreeks naar scenario_id's, niet naar flow_nodes.id — zo
+      // slaat flow.html ze op. Geen omweg via flowNodes dus nodig.
+      const zoekMetRichting = (haalVoorgangers) => {
+        const bezocht = new Set([scenarioId]);
+        let laag = haalVoorgangers(scenarioId);
+        while (laag.length) {
+          const volgendeLaag = [];
+          for (const voorgangerScenarioId of laag) {
+            if (bezocht.has(voorgangerScenarioId)) continue;
+            bezocht.add(voorgangerScenarioId);
+            const heeftEigenData = scenarioKenmerkInstanties.some(i => i.scenario_id === voorgangerScenarioId && i.groep === groep);
+            if (heeftEigenData) return voorgangerScenarioId;
+            haalVoorgangers(voorgangerScenarioId).forEach(id => volgendeLaag.push(id));
+          }
+          laag = volgendeLaag;
+        }
+        return null;
+      };
+
+      // Probeer eerst de gangbare richting (pijl loopt van een eerder
+      // naar een later scenario, dus 'to_id' is dit scenario en
+      // 'from_id' de voorganger). Levert dat niets op, probeer dan de
+      // omgekeerde richting — afhankelijk van hoe de pijl in de
+      // Flow-weergave getekend is, kan dat ook andersom opgeslagen zijn.
+      return zoekMetRichting(id => flowEdges.filter(e => e.to_id === id).map(e => e.from_id))
+        ?? zoekMetRichting(id => flowEdges.filter(e => e.from_id === id).map(e => e.to_id));
+    }
+
+    function isStartVanFlow(scenarioId) {
+      const node = flowNodes.find(n => n.scenario_id === scenarioId);
+      return !!(node && node.is_start);
+    }
+
+    // Alle scenario's van de flow waar dit scenario in zit, in de volgorde waarin ze
+    // worden uitgevoerd: vanaf het startscenario langs de verbindingen (edges).
+    // Resultaat is een lijst van "lagen"; scenario's in dezelfde laag zijn parallelle
+    // takken (staan op hetzelfde moment in de flow). Scenario's die niet met het
+    // startscenario verbonden zijn komen als laatste, op code gesorteerd.
+    function flowScenarioLagen(scenarioId) {
+      const node = flowNodes.find(n => n.scenario_id === scenarioId);
+      if (!node || !node.flow_id) return [];
+      const knopen = flowNodes.filter(n => n.flow_id === node.flow_id);
+      const ids = new Set(knopen.map(n => n.scenario_id));
+      const edges = flowEdges.filter(e => ids.has(e.from_id) && ids.has(e.to_id));
+      const start = knopen.find(n => n.is_start);
+
+      // Richting: normaal loopt een edge van eerder (from) naar later (to) scenario; staat
+      // het startscenario echter alleen aan de 'to'-kant, dan is de flow omgekeerd opgeslagen
+      // (zelfde aanpak als elders in de tool).
+      const omgekeerd = !!start && !edges.some(e => e.from_id === start.scenario_id) && edges.some(e => e.to_id === start.scenario_id);
+      const volgende = id => edges.filter(e => (omgekeerd ? e.to_id : e.from_id) === id).map(e => omgekeerd ? e.from_id : e.to_id);
+
+      const niveau = {};
+      const code = id => (scenarios.find(x => x.id === id)?.code || '');
+      if (start) {
+        // Langste afstand vanaf de start, zodat een samenkomend scenario pas ná al zijn voorgangers komt.
+        niveau[start.scenario_id] = 0;
+        const wachtrij = [start.scenario_id];
+        let veiligheid = 0;
+        while (wachtrij.length && veiligheid++ < 5000) {
+          const id = wachtrij.shift();
+          volgende(id).forEach(n => {
+            if ((niveau[n] ?? -1) < niveau[id] + 1 && niveau[id] + 1 <= ids.size) { niveau[n] = niveau[id] + 1; wachtrij.push(n); }
+          });
+        }
+      }
+      const lagenPerNiveau = {};
+      Object.entries(niveau).forEach(([id, l]) => { (lagenPerNiveau[l] = lagenPerNiveau[l] || []).push(id); });
+      const lagen = Object.keys(lagenPerNiveau).map(Number).sort((a, b) => a - b)
+        .map(l => lagenPerNiveau[l].sort((a, b) => code(a).localeCompare(code(b), undefined, { numeric: true })));
+      const losse = [...ids].filter(id => !(id in niveau)).sort((a, b) => code(a).localeCompare(code(b), undefined, { numeric: true }));
+      losse.forEach(id => lagen.push([id]));
+      return lagen.map(laag => laag.map(id => scenarios.find(x => x.id === id)).filter(Boolean)).filter(l => l.length);
+    }
+
+    // De volgorde van de flow als rij "chips"; het geopende scenario is groter en opvallend.
+    function renderFlowVolgorde(scenarioId) {
+      const lagen = flowScenarioLagen(scenarioId);
+      if (lagen.length < 2 && !(lagen[0] && lagen[0].length > 1)) return '';
+      const chip = sc => sc.id === scenarioId
+        ? `<span title="Dit scenario" style="display:inline-block; background:#39870c; color:#fff; font-size:15px; font-weight:800; border-radius:8px; padding:4px 12px;">${esc(sc.code)}</span>`
+        : `<a href="app.html?scenario=${sc.id}" target="_blank" title="${esc(sc.title || '')}" style="display:inline-block; background:#fff; color:var(--text-muted); border:1px solid #39870c55; font-size:11.5px; font-weight:600; border-radius:6px; padding:2px 8px; text-decoration:none;">${esc(sc.code)}</a>`;
+      return `<div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;" title="Volgorde waarin de scenario's van deze flow worden uitgevoerd">
+        ${lagen.map((laag, i) => `${i ? '<span style="color:#39870c; font-weight:700;">→</span>' : ''}<span style="display:inline-flex; flex-direction:column; gap:3px; align-items:flex-start;">${laag.map(chip).join('')}</span>`).join('')}
+      </div>`;
+    }
+
+    function isInFlow(scenarioId) {
+      return flowNodes.some(n => n.scenario_id === scenarioId && n.flow_id);
+    }
+
+    // Directe voorganger(s) van dit scenario in de flow (géén verdere
+    // zoektocht zoals vindVoorgangerMetData — puur de scenario's die
+    // via een edge rechtstreeks vóór dit scenario liggen). Zelfde
+    // richtingsonafhankelijke aanpak als elders: probeer eerst de
+    // gangbare richting, val anders terug op de omgekeerde.
+    function directeVoorgangersInFlow(scenarioId) {
+      const viaTo = flowEdges.filter(e => e.to_id === scenarioId).map(e => e.from_id);
+      if (viaTo.length) return viaTo;
+      return flowEdges.filter(e => e.from_id === scenarioId).map(e => e.to_id);
+    }
+
+    // Staan alle activiteiten van dit scenario op OK?
+    function isScenarioVolledigOk(scenarioId) {
+      const acts = activities.filter(a => a.scenario_id === scenarioId);
+      if (!acts.length) return false;
+      return acts.every(a => (results[a.id]?.result || 'open') === 'ok');
+    }
+
+    // Mag de EERSTE activiteit van dit scenario al bewerkt worden? Bij
+    // het startscenario van een flow (of een scenario buiten een flow)
+    // altijd. Bij een vervolgscenario pas als alle directe
+    // voorganger(s) in de flow volledig op OK staan — een scenario
+    // verderop in de keten mag niet starten vóórdat het scenario
+    // ervoor helemaal is afgerond.
+    function eersteActiviteitMagStarten(scenarioId) {
+      if (!isInFlow(scenarioId) || isStartVanFlow(scenarioId)) return true;
+      const voorgangers = directeVoorgangersInFlow(scenarioId);
+      if (!voorgangers.length) return true; // geen voorganger gevonden, niet onterecht blokkeren
+      return voorgangers.every(id => isScenarioVolledigOk(id));
+    }
+
+    function getScenarioStatus(scenarioId) {
+      const acts = activities.filter(a => a.scenario_id === scenarioId);
+      if (!acts.length) return 'open';
+      const statuses = acts.map(a => results[a.id]?.result || 'open');
+      if (statuses.every(s => s === 'ok')) return 'ok';
+      if (statuses.some(s => s === 'nok')) return 'nok';
+      if (statuses.some(s => s !== 'open')) return 'open';
+      return 'open';
+    }
+
+    function getScenarioPct(scenarioId) {
+      const acts = activities.filter(a => a.scenario_id === scenarioId);
+      if (!acts.length) return 0;
+      const done = acts.filter(a => results[a.id]?.result && results[a.id].result !== 'open').length;
+      return Math.round((done / acts.length) * 100);
+    }
+
+    // Scenario's waar de ingelogde organisatie daadwerkelijk bij
+    // betrokken is (verantwoordelijk of acceptant van minstens 1
+    // activiteit) — voor een gewone gebruiker/manager is dit de basis
+    // voor zowel de lijst als de tellers bovenaan. De beheerder ziet
+    // altijd alles.
+    function getBasisScenarios() {
+      if (currentProfile?.role === 'admin') return scenarios;
+      const myOrgId = effectiefOrgId;
+      return scenarios.filter(s => activities.some(a => a.scenario_id === s.id && (a.organisation_id === myOrgId || a.acceptant_org?.id === myOrgId)));
+    }
+
+    function updateStats() {
+      const basis = getBasisScenarios();
+      const total = basis.length;
+      const ok = basis.filter(s => getScenarioStatus(s.id) === 'ok').length;
+      const nok = basis.filter(s => getScenarioStatus(s.id) === 'nok').length;
+      const open = total - ok - nok;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statOk').textContent = ok;
+      document.getElementById('statNok').textContent = nok;
+      document.getElementById('statOpen').textContent = open;
+      const done = total > 0 ? Math.round(((ok + nok) / total) * 100) : 0;
+      document.getElementById('overallBar').style.width = done + '%';
+    }
+
+    function setFilter(f, el) {
+      activeFilter = f;
+      document.querySelectorAll('.export-bar .btn').forEach(b => b.style.background = '');
+      document.querySelectorAll('[id^="f-"]').forEach(b => b.style.fontWeight = '400');
+      el.style.fontWeight = '600';
+      renderAll();
+    }
+
+    // Notificaties worden per ketentest beheerd door de beheerder (zie Beheer
+    // → Notificaties) en hier geladen uit de database. Geen hardgecodeerde
+    // lijst meer, zodat elke notificatie die de beheerder toevoegt automatisch
+    // wordt herkend, ook als de naam nog niet eerder voorkwam.
+    let NOTIFICATIES = [];
+
+    // Bouw regex die zowel spaties als underscores herkent, hoofdletterongevoelig.
+    // Identiek aan de implementatie in admin.html, zodat herkenning overal
+    // consistent werkt.
+    function buildPattern(naam) {
+      const escaped = naam
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/[_\s]+/g, '[_\\s]+');
+      return new RegExp(escaped, 'gi');
+    }
+
+    async function loadNotificationDefs() {
+      if (!activeKetentest) { NOTIFICATIES = []; return; }
+      const { data, error } = await sb.from('notification_definitions').select('*').eq('ketentest_id', activeKetentest.id).order('naam');
+      if (error) { console.error('loadNotificationDefs error:', error); NOTIFICATIES = []; return; }
+      NOTIFICATIES = data || [];
+    }
+
+    let activeNotifFilter = null;
+
+    function getScenarioNotificaties(scenarioId) {
+      const acts = activities.filter(a => a.scenario_id === scenarioId);
+      const found = new Map();
+      acts.forEach(a => {
+        const text = (a.description || '');
+        NOTIFICATIES.forEach(n => {
+          const pattern = buildPattern(n.naam);
+          if (pattern.test(text) && !found.has(n.naam)) {
+            found.set(n.naam, n);
+          }
+        });
+      });
+      return [...found.values()];
+    }
+
+    function renderNotifLabels(notifs, scenarioId) {
+      if (!notifs.length) return '';
+      return '<div class="notif-labels-wrap">' +
+        notifs.map(n => {
+          const isActive = activeNotifFilter === n.naam;
+          return `<span class="notif-label notif-${n.type}"
+            onclick="event.stopPropagation(); setNotifFilter('${n.naam}')"
+            title="Klik om te filteren op: ${n.naam}"
+            style="${isActive ? 'outline:2px solid currentColor; outline-offset:2px; font-weight:700;' : ''}"
+            >${n.naam}</span>`;
+        }).join('') +
+        '</div>';
+    }
+
+    // Berichten: automatisch gesignaleerd op basis van een vast patroon
+    // (2 of 3 letters gevolgd door 2 of 3 cijfers, bijv. "AB12" of "ABC123")
+    // — in tegenstelling tot notificaties is hier geen beheerde lijst met
+    // definities voor nodig.
+    const BERICHT_PATTERN = /\b[A-Za-z]{2,3}[0-9]{2,3}\b/g;
+
+    function getScenarioBerichten(scenarioId) {
+      const acts = activities.filter(a => a.scenario_id === scenarioId);
+      const found = new Set();
+      acts.forEach(a => {
+        const matches = (a.description || '').match(BERICHT_PATTERN) || [];
+        matches.forEach(m => found.add(m.toUpperCase()));
+      });
+      return [...found].sort();
+    }
+
+    function renderBerichtLabels(berichten) {
+      if (!berichten.length) return '';
+      return '<div class="notif-labels-wrap">' +
+        berichten.map(b => `<span class="bericht-label" title="Bericht: ${b}">📨 ${b}</span>`).join('') +
+        '</div>';
+    }
+
+    // Toont de aan dit scenario gekoppelde functionele processen (bijv.
+    // "Toewijzing wijzigen") als badges, zodat een tester in één oogopslag
+    // ziet welke processen dit scenario raakt.
+    function renderProcesLabels(scenarioId) {
+      const procesIds = scenarioFunctioneleProcessen.filter(x => x.scenario_id === scenarioId).map(x => x.proces_id);
+      if (!procesIds.length) return '';
+      const processen = functioneleProcessen.filter(p => procesIds.includes(p.id));
+      if (!processen.length) return '';
+      return '<div class="notif-labels-wrap">' +
+        processen.map(p => `<span class="proces-label" title="${p.omschrijving ? esc(p.omschrijving) : 'Functioneel proces: ' + esc(p.naam)}">⚙ ${esc(p.naam)}</span>`).join('') +
+        '</div>';
+    }
+
+    function setNotifFilter(naam) {
+      // null = filter wissen, anders toggle
+      activeNotifFilter = (naam === null || activeNotifFilter === naam) ? null : naam;
+      const existing = document.getElementById('detail-panel-' + (openScenarioId||''));
+      if (existing) existing.remove();
+      openScenarioId = null;
+      updateNotifFilterIndicator();
+      renderAll();
+    }
+
+    function updateNotifFilterIndicator() {
+      const indicator = document.getElementById('notifFilterIndicator');
+      const btn = document.getElementById('notifFilterBtn');
+      const lbl = document.getElementById('notifFilterLabel');
+      if (!indicator) return;
+      if (activeNotifFilter) {
+        indicator.style.display = '';
+        lbl.textContent = '🔔 ' + activeNotifFilter;
+        // Kleur passend bij type
+        const notif = NOTIFICATIES.find(n => n.naam === activeNotifFilter);
+        const colors = {
+          nieuw: {color:'#065f46', bg:'#d1fae5', border:'#6ee7b7'},
+          gewijzigd: {color:'#92400e', bg:'#fef3c7', border:'#fcd34d'},
+          verwijderd: {color:'#991b1b', bg:'#fee2e2', border:'#fca5a5'},
+          informatief: {color:'#1e40af', bg:'#dbeafe', border:'#93c5fd'},
+        };
+        const c = colors[notif?.type] || {color:'#374151', bg:'#f3f4f6', border:'#d1d5db'};
+        btn.style.color = c.color;
+        btn.style.background = c.bg;
+        btn.style.borderColor = c.border;
+      } else {
+        indicator.style.display = 'none';
+      }
+    }
+
+    const NOTIF_STYLE = {
+      nieuw:       'background:#d1fae5; color:#065f46; border-radius:3px; padding:1px 4px; font-weight:600; border-bottom:2px solid #6ee7b7;',
+      gewijzigd:   'background:#fef3c7; color:#92400e; border-radius:3px; padding:1px 4px; font-weight:600; border-bottom:2px solid #fcd34d;',
+      informatief: 'background:#dbeafe; color:#1e40af; border-radius:3px; padding:1px 4px; font-weight:600; border-bottom:2px solid #93c5fd;',
+      verwijderd:  'background:#fee2e2; color:#991b1b; border-radius:3px; padding:1px 4px; font-weight:600; border-bottom:2px solid #fca5a5;',
+    };
+
+    function highlightNotificaties(text) {
+      if (!text) return text;
+      let result = text;
+      NOTIFICATIES.forEach(n => {
+        const pattern = buildPattern(n.naam);
+        result = result.replace(pattern, match =>
+          `<mark style="${NOTIF_STYLE[n.type]}">${match}</mark>`
+        );
+      });
+      return result;
+    }
+
+    let activeTabPrefix = null;
+
+    function getScenarioPrefix(code) {
+      const m = code.match(/^([A-Z]+\d+)-/);
+      return m ? m[1] : code.substring(0, 3);
+    }
+
+    const TAB_COLORS = [
+      {bg:'#39870c', light:'#eaf3e0'},
+      {bg:'#154273', light:'#e8f0fb'},
+      {bg:'#2d6e09', light:'#d4edcc'},
+      {bg:'#1a5496', light:'#ddeaf8'},
+      {bg:'#4a9e0f', light:'#eef7e6'},
+      {bg:'#0f3d6e', light:'#d6e8f5'},
+      {bg:'#2f7a0a', light:'#dff0d5'},
+      {bg:'#1e6bbd', light:'#d9ecff'},
+    ];
+
+    function renderTabs() {
+      const allPrefixes = [...new Set(scenarios.map(s => getScenarioPrefix(s.code)))].sort();
+      if (allPrefixes.length <= 1) return '';
+      if (!activeTabPrefix || !allPrefixes.includes(activeTabPrefix)) {
+        activeTabPrefix = allPrefixes[0];
+      }
+      return `<div class="scenario-tabs">
+        <button class="scenario-tab ${activeTabPrefix === '__all__' ? 'active' : ''}"
+          onclick="setTab('__all__')"
+          style="${activeTabPrefix === '__all__'
+            ? 'color:#374151; border-bottom-color:#374151; background:#f3f4f6;'
+            : 'color:#6b7280;'}">
+          Alle <span class="tab-count" style="${activeTabPrefix === '__all__' ? 'background:#e5e7eb;border-color:#e5e7eb;' : ''}">${scenarios.length}</span>
+        </button>
+        ${allPrefixes.map((p, i) => {
+          const c = TAB_COLORS[i % TAB_COLORS.length];
+          const isActive = activeTabPrefix === p;
+          const count = scenarios.filter(s => getScenarioPrefix(s.code) === p).length;
+          return `<button class="scenario-tab ${isActive ? 'active' : ''}"
+            onclick="setTab('${p}')"
+            style="color:${c.bg}; border-bottom-color:${isActive ? c.bg : 'transparent'}; background:${isActive ? c.light : 'transparent'};">
+            ${p} <span class="tab-count" style="background:${c.light}; border-color:${c.bg}33; color:${c.bg};">${count}</span>
+          </button>`;
+        }).join('')}
+      </div>`;
+    }
+
+    function setTab(prefix) {
+      activeTabPrefix = prefix;
+      const existing = document.getElementById('detail-panel-' + (openScenarioId||''));
+      if (existing) existing.remove();
+      openScenarioId = null;
+      renderAll();
+    }
+
+    function renderAll() {
+      updateStats();
+      const myOrgId = effectiefOrgId;
+      const basisScenarios = getBasisScenarios();
+
+      const banner = document.getElementById('entryCriteriaBanner');
+      if (banner) {
+        const geblokkeerd = isOrgEntryCriteriaGeblokkeerd(myOrgId) && currentProfile?.role !== 'admin';
+        banner.style.display = geblokkeerd ? 'flex' : 'none';
+      }
+
+      let filtered = basisScenarios;
+
+      if (activeFilter === 'ok') filtered = basisScenarios.filter(s => getScenarioStatus(s.id) === 'ok');
+      else if (activeFilter === 'nok') filtered = basisScenarios.filter(s => getScenarioStatus(s.id) === 'nok');
+      else if (activeFilter === 'open') filtered = basisScenarios.filter(s => getScenarioStatus(s.id) === 'open');
+      else if (activeFilter === 'mine') {
+        filtered = basisScenarios.filter(s => activities.some(a => a.scenario_id === s.id && a.acceptant_org?.id === myOrgId));
+      }
+      else if (activeFilter === 'mine-verantwoordelijk') {
+        filtered = basisScenarios.filter(s => activities.some(a => a.scenario_id === s.id && a.organisation_id === myOrgId));
+      }
+      // Filter op notificatie
+      if (activeNotifFilter) {
+        filtered = filtered.filter(s => getScenarioNotificaties(s.id).some(n => n.naam === activeNotifFilter));
+      }
+
+      // Filter op actieve tab
+      const allPrefixes = [...new Set(basisScenarios.map(s => getScenarioPrefix(s.code)))].sort();
+      if (!activeTabPrefix && allPrefixes.length > 0) activeTabPrefix = allPrefixes[0];
+      if (activeTabPrefix && activeTabPrefix !== '__all__') {
+        filtered = filtered.filter(s => getScenarioPrefix(s.code) === activeTabPrefix);
+      }
+
+      const list = document.getElementById('scenarioList');
+      if (!scenarios.length) {
+        list.innerHTML = '<div class="empty-state"><p>Nog geen scenario\'s beschikbaar.</p></div>';
+        return;
+      }
+
+      // Tabs + rijenlijst
+      list.innerHTML = renderTabs(filtered) + '<div id="scenarioListInner" class="sc-row-list"></div>';
+      const container = document.getElementById('scenarioListInner');
+
+      container.innerHTML = filtered.map(s => {
+        const acts = activities.filter(a => a.scenario_id === s.id);
+        const status = getScenarioStatus(s.id);
+        const nTotal = acts.length;
+        const nOk  = acts.filter(a => (results[a.id]?.result || 'open') === 'ok').length;
+        const nNok = acts.filter(a => (results[a.id]?.result || 'open') === 'nok').length;
+        const nOpen = nTotal - nOk - nNok;
+        const verantwoordelijken = [...new Map(acts.filter(a => a.organisations).map(a => [a.organisations.id, a.organisations])).values()];
+        const acceptanten = [...new Map(acts.filter(a => a.acceptant_org).map(a => [a.acceptant_org.id, a.acceptant_org])).values()];
+        const statusLabel = { ok: 'Geslaagd', nok: 'Mislukt', open: 'Open' }[status];
+
+        const prefixIdx = allPrefixes.indexOf(getScenarioPrefix(s.code));
+        const tileColor = TAB_COLORS[prefixIdx % TAB_COLORS.length];
+        return `<div class="sc-row status-${status}" id="sc-${s.id}" onclick="toggleScenario('${s.id}', event)"
+          style="border-left-color: ${tileColor.bg};">
+          <span class="sc-row-code" style="color:${tileColor.bg};">${s.code}</span>
+          <span class="sc-row-title">${s.title}${isStartVanFlow(s.id) ? ` <span style="display:inline-flex; align-items:center; gap:3px; background:#ede9fe; color:#5b21b6; border:1px solid #ddd6fe; border-radius:99px; padding:1px 9px; font-size:10.5px; font-weight:700; white-space:nowrap; vertical-align:middle;" title="Dit scenario is het startscenario van een flow">🚩 Start</span>` : ''}</span>
+          <span class="badge badge-${status}" style="flex-shrink:0;">${statusLabel}</span>
+          <div class="sc-row-flow">${scenarioFlowMap[s.id] ? `<a href="flow.html?flow=${scenarioFlowMap[s.id].id}" target="_blank" onclick="event.stopPropagation()" title="Open flow: ${flowLabel(scenarioFlowMap[s.id])}">🔗 Flow ${scenarioFlowMap[s.id].nummer}</a>` : ''}</div>
+          <div class="sc-row-bar-wrap">
+            <div class="tile-bar">
+              ${nOk  > 0 ? `<div class="tile-bar-ok" style="width:${Math.round(nOk/nTotal*100)}%"></div>` : ''}
+              ${nNok > 0 ? `<div class="tile-bar-nok" style="width:${Math.round(nNok/nTotal*100)}%"></div>` : ''}
+            </div>
+          </div>
+          <div class="tile-counts">
+            <span style="color:var(--text-muted);">${nTotal} act.</span>
+            ${nOk  > 0 ? `<span style="color:#16a34a;">✓${nOk}</span>` : ''}
+            ${nNok > 0 ? `<span style="color:#dc2626;">✗${nNok}</span>` : ''}
+            ${nOpen > 0 && (nOk > 0 || nNok > 0) ? `<span style="color:var(--warning);">○${nOpen}</span>` : ''}
+          </div>
+          <div class="sc-row-pills">
+            ${verantwoordelijken.map(o => { const k = getOrgKleur(o.id, allOrgs); return `<span title="Verantwoordelijk: ${o.name}" style="background:${k.bg};color:${k.fg};border-radius:99px;padding:1px 7px;font-size:10px;font-weight:600;">${o.code||o.name}</span>`; }).join('')}
+            ${acceptanten.map(o => { const k = getOrgKleur(o.id, allOrgs); return `<span title="Acceptant: ${o.name}" style="background:${k.bg};color:${k.fg};border-radius:99px;padding:1px 7px;font-size:10px;font-weight:600;">${o.code||o.name}</span>`; }).join('')}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderActivities(acts) {
+      const myOrgId = effectiefOrgId;
+      // Sorteer op volgnummer zodat we per activiteit de voorganger kunnen bepalen
+      const sorted = [...acts].sort((a, b) => a.sort_order - b.sort_order);
+      const notStartedYet = activeKetentest?.start_op && new Date(activeKetentest.start_op) > new Date() && currentProfile?.role !== 'admin';
+      const entryCriteriaGeblokkeerd = isOrgEntryCriteriaGeblokkeerd(myOrgId) && currentProfile?.role !== 'admin';
+
+      return `<div class="activities-table-wrap" style="border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-top:4px;">
+        <div class="activity-header">
+          <div>#</div><div>Verantw. org.</div><div>Omschrijving</div><div>Acceptant</div><div>Uitkomst</div>
+        </div>
+        ${sorted.map((a, idx) => {
+          const r = results[a.id] || {};
+          const bevinding = latestBevindingByActivity[a.id] || null;
+          const isAcceptant = a.acceptant_org?.id === myOrgId;
+          // Een activiteit zonder acceptant (bijv. voortgekomen uit
+          // "Wanneer") wordt door de verantwoordelijke organisatie zelf
+          // bevestigd — anders zou niemand 'm ooit kunnen afronden.
+          const isVerantwZonderAcceptant = !a.acceptant_org_id && a.organisations?.id === myOrgId;
+          // Bij de eerste activiteit van een vervolgscenario in een flow:
+          // pas bewerkbaar zodra het vorige scenario in de flow
+          // volledig op OK staat. Activiteiten daarna binnen hetzelfde
+          // scenario zijn al gedekt door de gewone within-scenario
+          // volgorde (canEdit hangt toch al af van of deze activiteit
+          // aan de beurt is).
+          const flowVolgordeOk = idx > 0 || eersteActiviteitMagStarten(a.scenario_id);
+          const isVerantwoordelijke = a.organisations?.id === myOrgId;
+          // Verantwoordelijke, terwijl er wél een acceptant is aangewezen
+          // (en die acceptant niet toevallig ook wijzelf zijn — dan is
+          // isAcceptant al waar en gelden de volle rechten toch al).
+          const isVerantwMetAcceptant = !!a.acceptant_org_id && isVerantwoordelijke && !isAcceptant;
+          const nietManagerOfGeblokkeerd = flowVolgordeOk && !['manager','softwareleverancier'].includes(currentProfile?.role);
+          // OK zetten mag alleen de acceptant, of de verantwoordelijke als
+          // er geen acceptant is — een verantwoordelijke met acceptant
+          // mag zichzelf niet "goedkeuren".
+          const magOk = nietManagerOfGeblokkeerd && (isAcceptant || isVerantwZonderAcceptant || currentProfile?.role === 'admin');
+          // NOK zetten mag daarnaast ook de verantwoordelijke zelf, ook
+          // als er een acceptant is — die mag altijd zelf aan de bel
+          // trekken dat iets niet goed is gegaan.
+          const magNok = nietManagerOfGeblokkeerd && (isAcceptant || isVerantwZonderAcceptant || isVerantwMetAcceptant || currentProfile?.role === 'admin');
+          const canEdit = (magOk || magNok) && !entryCriteriaGeblokkeerd;
+          const orgName = a.organisations?.name || '';
+          const orgCode = a.organisations?.code || '';
+          const accName = a.acceptant_org?.name || '';
+          const accCode = a.acceptant_org?.code || '';
+          const hasNote = !!(r.notes && r.notes.trim());
+
+          // Bepaal of de voorgaande activiteit al op OK staat
+          const prevAct = idx > 0 ? sorted[idx - 1] : null;
+          const prevResult = prevAct ? (results[prevAct.id]?.result || 'open') : null;
+          const isBlocked = prevAct !== null && prevResult !== 'ok' && currentProfile?.role !== 'admin';
+
+          // Eerste activiteit van een vervolgscenario, en het vorige
+          // scenario in de flow staat nog niet volledig op OK.
+          const isFlowBlocked = idx === 0 && !flowVolgordeOk && currentProfile?.role !== 'admin';
+          const voorgaandScenarioCode = isFlowBlocked
+            ? (scenarios.find(s => directeVoorgangersInFlow(a.scenario_id).includes(s.id))?.code || 'het vorige scenario')
+            : null;
+
+          return `<div class="activity-row" id="row-${a.id}">
+            <div style="color:var(--text-muted); font-size:12px;">${a.sort_order}</div>
+            <div>${orgName ? `<span class="org-pill" style="background:${getOrgKleur(a.organisation_id, allOrgs).bg};color:${getOrgKleur(a.organisation_id, allOrgs).fg};${a.organisation_id === myOrgId ? 'box-shadow:0 0 0 1.5px currentColor;' : ''}">${orgCode || orgName}</span>` : '—'}</div>
+            <div style="font-size:13px;">${highlightNotificaties(a.description)}</div>
+            <div>${accName ? `<span class="org-pill" style="background:${getOrgKleur(a.acceptant_org_id, allOrgs).bg};color:${getOrgKleur(a.acceptant_org_id, allOrgs).fg};${isAcceptant ? 'box-shadow:0 0 0 1.5px currentColor;' : ''}">${accCode || accName}</span>` : '—'}</div>
+            <div style="display:flex; align-items:center; gap:6px; padding:8px 12px; overflow:visible; min-width:0;">
+              ${isBlocked ? `
+                <div style="display:flex; align-items:center; gap:6px; color:var(--text-muted); font-size:12px;" title="Activiteit #${prevAct.sort_order} moet eerst op OK gezet worden">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Wacht op #${prevAct.sort_order}
+                </div>
+              ` : isFlowBlocked ? `
+                <div style="display:flex; align-items:center; gap:6px; color:var(--text-muted); font-size:12px;" title="${esc(voorgaandScenarioCode)} moet eerst volledig op OK staan voordat dit scenario van start kan">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Wacht op ${esc(voorgaandScenarioCode)}
+                </div>
+              ` : entryCriteriaGeblokkeerd ? `
+                <div style="display:flex; align-items:center; gap:6px; color:#991b1b; font-size:12px;" title="Uw organisatie mag nog geen activiteiten op OK/NOK zetten — de entry-criteria zijn nog niet (volledig) goedgekeurd. Ga naar Beheer → Entry-criteria.">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Entry-criteria nog niet goedgekeurd
+                </div>
+              ` : notStartedYet ? `
+                <div style="display:flex; align-items:center; gap:6px; color:#92400e; font-size:12px;" title="De ketentest start op ${new Date(activeKetentest.start_op).toLocaleString('nl-NL')}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Start: ${new Date(activeKetentest.start_op).toLocaleDateString('nl-NL')}
+                </div>
+              ` : `
+              <div class="result-toggle">
+                ${canEdit ? (() => {
+                  const isNok = r.result === 'nok';
+                  const readyForRetest = isNok && bevinding?.status === 'opgelost_wacht_hertest';
+                  const okInteractief = magOk && (!isNok || readyForRetest);
+                  const okBtn = okInteractief
+                    ? `<button class="rtbtn rtbtn-ok ${r.result === 'ok' ? 'active' : ''}"
+                        onclick="${readyForRetest ? `retestOkClick('${a.id}','${a.scenario_id}')` : `setResult('${a.id}','${a.scenario_id}','ok')`}"
+                        title="Markeer als OK">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> OK
+                      </button>`
+                    : `<button class="rtbtn rtbtn-ok ${r.result === 'ok' ? 'active' : ''}" disabled style="cursor:not-allowed; opacity:${r.result === 'ok' ? '0.85' : '0.5'};" title="${r.result === 'ok' ? 'Al op OK gezet' : (!magOk ? 'Alleen de acceptant mag dit op OK zetten' : 'Deze bevinding moet eerst op \'Opgelost, wacht op hertest\' gezet worden bij Bevindingen voordat een hertest mogelijk is')}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> OK
+                      </button>`;
+                  const nokInteractief = magNok && !isNok;
+                  const nokBtn = nokInteractief
+                    ? `<button class="rtbtn rtbtn-nok" onclick="openNokModal('${a.id}','${a.scenario_id}')" title="Markeer als NOK">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> NOK
+                      </button>`
+                    : (!isNok
+                      ? `<button class="rtbtn rtbtn-nok" disabled style="cursor:not-allowed; opacity:0.5;" title="Je hebt geen rechten om dit op NOK te zetten">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> NOK
+                        </button>`
+                      : readyForRetest && magNok
+                        ? `<button class="rtbtn rtbtn-nok active" onclick="retestNokClick('${a.id}','${a.scenario_id}')" title="Nog steeds NOK na hertest">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> NOK
+                          </button>`
+                        : `<button class="rtbtn rtbtn-nok active" disabled style="cursor:not-allowed; opacity:0.7;" title="Een geregistreerde NOK kan niet meer worden uitgezet — deze wordt pas weer actief zodra de bevinding bij Bevindingen op 'Opgelost, wacht op hertest' is gezet">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> NOK
+                          </button>`);
+                  return okBtn + nokBtn;
+                })() : `
+                  <span class="rtbtn rtbtn-ok ${r.result === 'ok' ? 'active' : ''}" style="cursor:default;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> OK</span>
+                  <span class="rtbtn rtbtn-nok ${r.result === 'nok' ? 'active' : ''}" style="cursor:default;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> NOK</span>
+                `}
+                <button class="note-icon-btn ${hasNote ? 'has-note' : 'no-note'}"
+                  onclick="${canEdit ? `openNoteModal('${a.id}','${a.scenario_id}')` : (hasNote ? `viewNoteModal('${a.id}')` : '')}"
+                  style="${canEdit || hasNote ? '' : 'cursor:default;'}"
+                  title="${hasNote ? (canEdit ? 'Opmerking bekijken/bewerken' : 'Opmerking bekijken') : (canEdit ? 'Opmerking toevoegen' : 'Geen opmerking')}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  ${hasNote ? '<span style="font-size:11px;font-weight:600;">notitie</span>' : ''}
+                </button>
+                ${bevinding && r.result === 'nok' ? `<a href="admin.html?tab=nok&bevinding=${encodeURIComponent(bevinding.id)}" class="bevinding-link"
+                  title="Open bevinding B${bevinding.bevinding_nummer}${bevinding.titel ? ' — ' + esc(bevinding.titel) : ''}"
+                  style="display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:99px; background:#fee2e2; color:#991b1b; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap;">B${bevinding.bevinding_nummer}</a>` : ''}
+              </div>
+              `}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+
+    let openScenarioId = null;
+
+    function toggleScenario(id, event) {
+      // Sluit bestaand detail panel
+      const existing = document.getElementById('detail-panel-' + (openScenarioId||''));
+      if (existing) existing.remove();
+      document.querySelectorAll('.sc-row').forEach(t => { t.style.outline = ''; });
+
+      // Zelfde rij: sluiten
+      if (openScenarioId === id) {
+        openScenarioId = null;
+        return;
+      }
+
+      openScenarioId = id;
+      const row = document.getElementById('sc-' + id);
+      if (row) row.style.outline = '2px solid var(--brand-mid)';
+
+      const s = scenarios.find(x => x.id === id);
+      const acts = activities.filter(a => a.scenario_id === id).sort((a,b) => a.sort_order - b.sort_order);
+
+      // Maak detail panel
+      const panel = document.createElement('div');
+      panel.id = 'detail-panel-' + id;
+      panel.style.cssText = 'background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:4px;';
+      panel.innerHTML = `
+        <div style="padding:14px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--surface);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:12px; font-weight:700; color:var(--text-muted);">${s.code}</span>
+            <strong style="font-size:15px;">${s.title}</strong>
+          </div>
+          <button onclick="toggleScenario('${id}')" style="border:1px solid var(--border);background:var(--white);cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px 10px;border-radius:var(--radius);">✕ Sluiten</button>
+        </div>
+        <div style="padding:0 20px 16px; overflow-x:auto;">
+          ${isInFlow(s.id) ? `<div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px 12px; margin:10px 0 4px;"><div style="display:flex; align-items:center; gap:5px; background:#eaf3e0; border:1px solid #39870c33; border-radius:99px; padding:2px 10px; cursor:pointer; width:fit-content;" onclick="window.location.href='flow.html'" title="Bekijk in Flow">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#39870c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              <span style="font-size:11px; font-weight:600; color:#39870c;">Onderdeel van flow</span>
+            </div>${renderFlowVolgorde(s.id)}</div>` : ''}
+          ${s.description ? `<p style="font-size:13px; color:var(--text-muted); margin:8px 0;">${s.description}</p>` : ''}
+          ${renderNotifLabels(getScenarioNotificaties(s.id), s.id)}
+          ${renderBerichtLabels(getScenarioBerichten(s.id))}
+          ${renderProcesLabels(s.id)}
+          ${(s.gegeven || s.wanneer) ? `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0; padding:16px; background:var(--surface); border-radius:var(--radius); border:1px solid var(--border);">
+              ${s.gegeven ? '<div><p style=\"font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;\">Gegeven</p><p style=\"font-size:13px; line-height:1.7; white-space:pre-wrap;\">' + s.gegeven + '</p></div>' : ''}
+              ${s.wanneer ? '<div><p style=\"font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;\">Wanneer</p><p style=\"font-size:13px; line-height:1.7; white-space:pre-wrap;\">' + s.wanneer + '</p></div>' : ''}
+            </div>` : ''}
+          <div id="kenmerkenHouder-${s.id}">
+            ${renderIndicatiebesluitBlok(s.id)}
+            ${renderKenmerkGroepBlokken(s.id)}
+          </div>
+          ${acts.length ? renderActivities(acts) : '<p style="font-size:13px; color:var(--text-muted); font-style:italic; padding:12px 0;">Nog geen activiteiten.</p>'}
+          <details style="margin-top:12px; border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; background:var(--white);"
+            ontoggle="if (this.open && !this.dataset.geladen) { this.dataset.geladen = '1'; laadHistorieIn('scenario', '${s.id}', 'historieScenario-${s.id}'); }">
+            <summary style="cursor:pointer; font-size:12px; font-weight:700; color:var(--text-muted);">Historie van dit scenario en zijn activiteiten</summary>
+            <div id="historieScenario-${s.id}" style="margin-top:8px;"></div>
+          </details>
+        </div>`;
+
+      // Voeg het paneel direct in na de aangeklikte rij
+      row.insertAdjacentElement('afterend', panel);
+
+      // Scroll naar rij
+      setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+
+    // Pop-up bij het markeren van een activiteit als NOK: verplichte
+    // reden + eigenaar van de oplossing. Maakt een nieuwe bevinding aan,
+    // eventueel gekoppeld aan een eerdere (als een hertest opnieuw NOK
+    // opleverde).
+    function openNokModal(activityId, scenarioId, gerelateerdeBevindingId = null) {
+      const act = activities.find(a => a.id === activityId);
+      if (!act) return;
+      const defaultOwnerId = act.organisation_id || '';
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.id = 'nokModalOverlay';
+      modal.dataset.gerelateerdeBevindingId = gerelateerdeBevindingId || '';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+          <div class="modal-header">
+            <h3 style="color:var(--danger);">Activiteit als NOK markeren</h3>
+            <button class="btn btn-ghost btn-icon" onclick="document.getElementById('nokModalOverlay').remove()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="modal-body">
+            ${gerelateerdeBevindingId ? `<div class="alert" style="display:block; background:#ede9fe; color:#5b21b6; border:1px solid #c4b5fd; margin-bottom:14px;">Dit wordt vastgelegd als vervolgbevinding, gekoppeld aan de vorige.</div>` : ''}
+            <div class="form-group">
+              <label>Titel <span style="color:var(--danger);">*</span></label>
+              <input type="text" id="nokModalTitel" placeholder="Korte, herkenbare samenvatting van de bevinding..." maxlength="200">
+            </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label>Reden <span style="color:var(--danger);">*</span></label>
+              <textarea id="nokModalReden" placeholder="Wat gaat er mis? Wees zo concreet mogelijk, dit helpt bij het oplossen..." style="min-height:100px;"></textarea>
+            </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label>Omschrijving probleem <span style="color:var(--danger);">*</span></label>
+              <textarea id="nokModalOmschrijving" placeholder="Aanvullende, meer technische of functionele omschrijving van het probleem..." style="min-height:80px;"></textarea>
+            </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label>Prioriteit</label>
+              <select id="nokModalPrioriteit">
+                <option value="laag">Laag</option>
+                <option value="midden" selected>Midden</option>
+                <option value="hoog">Hoog</option>
+                <option value="blokkerend">Blokkerend</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label>Eigenaar van de oplossing</label>
+              <select id="nokModalEigenaar">
+                ${allOrgs.filter(o => !orgIdsVanKetentest || orgIdsVanKetentest.has(o.id) || o.id === defaultOwnerId).map(o => `<option value="${o.id}" ${o.id === defaultOwnerId ? 'selected' : ''}>${o.name}</option>`).join('')}
+              </select>
+              <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">Standaard de verantwoordelijke organisatie van deze activiteit — pas aan als het probleem eigenlijk ergens anders ligt.</p>
+            </div>
+            <div id="alertNokModal" class="alert" style="display:none; margin-top:14px;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="document.getElementById('nokModalOverlay').remove()">Annuleren</button>
+            <button class="btn btn-primary" style="background:var(--danger); border-color:var(--danger);" onclick="submitNokModal('${activityId}','${scenarioId}')">NOK vastleggen</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    // Eenvoudige Ja/Nee-bevestiging voor de hertest-vragen.
+    function showRetestConfirm(message, onJa) {
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.id = 'retestConfirmOverlay';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div class="modal" style="max-width:440px;" onclick="event.stopPropagation()">
+          <div class="modal-header"><h3>Hertest bevestigen</h3></div>
+          <div class="modal-body"><p style="font-size:14px;">${message}</p></div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" id="retestConfirmNee">Nee</button>
+            <button class="btn btn-primary" id="retestConfirmJa">Ja</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+      document.getElementById('retestConfirmNee').onclick = () => modal.remove();
+      document.getElementById('retestConfirmJa').onclick = async () => {
+        modal.remove();
+        await onJa();
+      };
+    }
+
+    // Klik op OK bij een activiteit die klaarstaat voor hertest.
+    function retestOkClick(activityId, scenarioId) {
+      showRetestConfirm('Klopt het dat de bevinding definitief is opgelost?', async () => {
+        const bevinding = latestBevindingByActivity[activityId];
+        if (bevinding) {
+          const resolved_at = new Date().toISOString();
+          const { error: bvErr } = await sb.from('bevindingen').update({ status: 'hertest_ok', resolved_at }).eq('id', bevinding.id);
+          // Mislukt dit (bijv. geen rechten), dan zorgt de database-trigger
+          // (bevinding-hertest-ok-automatisch.sql) er alsnog voor.
+          if (bvErr) console.warn('Bevinding bijwerken mislukt:', bvErr.message);
+          else { bevinding.status = 'hertest_ok'; bevinding.resolved_at = resolved_at; }
+        }
+        await setResult(activityId, scenarioId, 'ok');
+      });
+    }
+
+    // Klik op NOK bij een activiteit die klaarstaat voor hertest: de
+    // hertest is mislukt, dit wordt een nieuwe, gekoppelde bevinding.
+    function retestNokClick(activityId, scenarioId) {
+      showRetestConfirm('Klopt het dat de bevinding nog niet is opgelost of er een andere fout is opgetreden?', () => {
+        const bevinding = latestBevindingByActivity[activityId];
+        openNokModal(activityId, scenarioId, bevinding?.id || null);
+      });
+    }
+
+    // Signalering: hoeveel bevindingen zijn aan mijn organisatie
+    // toegewezen om op te lossen? Gebruikt de gedeelde functie
+    // (supabase-config.js) zodat dit overal in de navigatiebalk
+    // hetzelfde, altijd-actuele aantal toont — ook op andere pagina's.
+    // 'wisCache' = na een wijziging (bijv. een resultaat op OK/NOK zetten):
+    // dan worden de onthouden badge-uitkomsten eerst gewist, zodat de badges
+    // meteen de nieuwe stand tonen. Bij het gewoon laden van de pagina mag de
+    // (maximaal 45 seconden oude) onthouden uitkomst worden hergebruikt.
+    function refreshNokBadge(wisCache = false) {
+      if (wisCache) invalideerBadgeCache();
+      refreshGlobalNokBadge(effectiefOrgId);
+      refreshGonogoBadge(effectiefOrgId, currentProfile?.role);
+      refreshMijnActiesBadge(effectiefOrgId);
+    }
+
+    async function submitNokModal(activityId, scenarioId) {
+      const titel = document.getElementById('nokModalTitel').value.trim();
+      const reden = document.getElementById('nokModalReden').value.trim();
+      const omschrijvingProbleem = document.getElementById('nokModalOmschrijving').value.trim();
+      const prioriteit = document.getElementById('nokModalPrioriteit').value;
+      const eigenaar = document.getElementById('nokModalEigenaar').value;
+      if (!titel) {
+        const al = document.getElementById('alertNokModal');
+        al.textContent = 'Vul een titel in — dit is verplicht bij een NOK.';
+        al.className = 'alert alert-error';
+        al.style.display = '';
+        return;
+      }
+      if (!reden) {
+        const al = document.getElementById('alertNokModal');
+        al.textContent = 'Vul een reden in — dit is verplicht bij een NOK.';
+        al.className = 'alert alert-error';
+        al.style.display = '';
+        return;
+      }
+      if (!omschrijvingProbleem) {
+        const al = document.getElementById('alertNokModal');
+        al.textContent = 'Vul een omschrijving van het probleem in — dit is verplicht bij een NOK.';
+        al.className = 'alert alert-error';
+        al.style.display = '';
+        return;
+      }
+      const modalEl = document.getElementById('nokModalOverlay');
+      const gerelateerdeBevindingId = modalEl?.dataset.gerelateerdeBevindingId || null;
+      modalEl.remove();
+
+      const { data: bevinding, error: bevindingError } = await sb.from('bevindingen').insert({
+        ketentest_id: activeKetentest.id, activity_id: activityId, titel, toelichting: reden, prioriteit,
+        omschrijving_probleem: omschrijvingProbleem || null,
+        owner_org_id: eigenaar, status: 'nieuw', gerelateerde_bevinding_id: gerelateerdeBevindingId || null,
+        gemeld_door_user_id: currentUser?.id || null, gemeld_door_org_id: currentProfile?.organisation_id || null,
+      }).select().single();
+      if (bevindingError) { alert('Fout bij opslaan: ' + bevindingError.message); return; }
+      latestBevindingByActivity[activityId] = bevinding;
+
+      await sb.from('bevinding_toelichtingen').insert({
+        bevinding_id: bevinding.id, tekst: reden, organisation_id: currentProfile?.organisation_id || null,
+        created_by: currentUser?.id || null,
+      });
+
+      await setResult(activityId, scenarioId, 'nok', { notes: reden, nok_owner_org_id: eigenaar });
+    }
+
+    // Notitie modal
+    let historyPanelOpen = false;
+    let historyLoadedFor = null;
+
+    function viewNoteModal(activityId) {
+      const r = results[activityId] || {};
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.id = 'viewNoteModalOverlay';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+          <div class="modal-header">
+            <h3><span style="margin-right:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Opmerking</h3>
+            <button class="btn btn-ghost btn-icon" onclick="document.getElementById('viewNoteModalOverlay').remove()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="modal-body">
+            <p style="white-space:pre-wrap; word-break:break-word; font-size:14px; line-height:1.6; max-height:50vh; overflow-y:auto;">${esc(r.notes || '')}</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="document.getElementById('viewNoteModalOverlay').remove()">Sluiten</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    function openNoteModal(activityId, scenarioId) {
+      historyPanelOpen = false;
+      historyLoadedFor = null;
+      const r = results[activityId] || {};
+      const existing = r.notes || '';
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.id = 'noteModalOverlay';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+          <div class="modal-header">
+            <h3><span style="margin-right:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Opmerking</h3>
+            <button class="btn btn-ghost btn-icon" onclick="document.getElementById('noteModalOverlay').remove()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="modal-body">
+            <textarea class="notes-area" id="noteModalText" placeholder="Voeg een opmerking, bevinding of afwijking toe..." style="min-height:120px;">${existing}</textarea>
+            <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:12px;">
+              <button type="button" onclick="toggleHistoryPanel('${activityId}')" id="historyToggleBtn"
+                style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:12px; font-weight:600; display:flex; align-items:center; gap:5px; padding:0;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="historyChevron"><polyline points="9 18 15 12 9 6"/></svg>
+                Wijzigingshistorie bekijken
+              </button>
+              <div id="historyPanel" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
+                <p style="font-size:12px; color:var(--text-muted);">Laden...</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="document.getElementById('noteModalOverlay').remove()">Annuleren</button>
+            <button class="btn btn-primary" onclick="saveNoteFromModal('${activityId}','${scenarioId}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Opslaan</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    async function toggleHistoryPanel(activityId) {
+      const panel = document.getElementById('historyPanel');
+      const chevron = document.getElementById('historyChevron');
+      if (!panel) return;
+
+      historyPanelOpen = !historyPanelOpen;
+      panel.style.display = historyPanelOpen ? '' : 'none';
+      chevron.style.transform = historyPanelOpen ? 'rotate(90deg)' : '';
+
+      if (historyPanelOpen && historyLoadedFor !== activityId) {
+        historyLoadedFor = activityId;
+        const { data, error } = await sb
+          .from('activity_result_history')
+          .select('*')
+          .eq('activity_id', activityId)
+          .order('changed_at', { ascending: false });
+
+        if (error || !data || !data.length) {
+          panel.innerHTML = '<p style="font-size:12px; color:var(--text-muted); font-style:italic;">Nog geen wijzigingen vastgelegd.</p>';
+          return;
+        }
+
+        const statusLabel = { ok: 'Geslaagd', nok: 'Mislukt', open: 'Open', null: '—' };
+        panel.innerHTML = data.map(h => {
+          const tijd = new Date(h.changed_at).toLocaleString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          const resultChanged = h.old_result !== h.new_result;
+          const notesChanged = h.old_notes !== h.new_notes;
+          return `<div style="font-size:12px; padding:8px 0; border-bottom:1px solid var(--border);">
+            <div style="color:var(--text-muted); margin-bottom:3px;">${tijd}</div>
+            ${resultChanged ? `<div>Resultaat: <strong>${statusLabel[h.old_result] || '—'}</strong> → <strong>${statusLabel[h.new_result] || '—'}</strong></div>` : ''}
+            ${notesChanged && h.new_notes ? `<div style="color:var(--text-muted); margin-top:2px;">Opmerking gewijzigd: "${h.new_notes.replace(/</g,'&lt;').substring(0,80)}${h.new_notes.length > 80 ? '...' : ''}"</div>` : ''}
+          </div>`;
+        }).join('');
+      }
+    }
+
+    async function saveNoteFromModal(activityId, scenarioId) {
+      const notes = document.getElementById('noteModalText').value;
+      const gelukt = await saveNotes(activityId, scenarioId, notes);
+      if (!gelukt) return; // fout is al getoond; pop-up en getypte tekst blijven staan zodat opnieuw geprobeerd kan worden
+      document.getElementById('noteModalOverlay').remove();
+      // Re-render the scenario to update the icon
+      const s = scenarios.find(x => x.id === scenarioId);
+      if (s) {
+        const acts = activities.filter(a => a.scenario_id === s.id).sort((a,b) => a.sort_order - b.sort_order);
+        const bodyEl = document.getElementById(`detail-panel-${scenarioId}`);
+        if (bodyEl) {
+          const tableWrap = bodyEl.querySelector('.activities-table-wrap');
+          if (tableWrap) tableWrap.outerHTML = renderActivities(acts);
+        }
+      }
+    }
+
+    async function setResult(activityId, scenarioId, result, extra = {}) {
+      // Toggle: klikken op al-actieve knop zet hem uit — behalve als dit
+      // een (vervolg-)NOK is die via de pop-up wordt vastgelegd, want dan
+      // is 'nok' altijd de bedoelde, definitieve keuze.
+      const isNieuweNokRegistratie = result === 'nok' && !!extra.nok_owner_org_id;
+      if (results[activityId]?.result === result && !isNieuweNokRegistratie) result = 'open';
+      const notes = extra.notes !== undefined ? extra.notes : (document.getElementById(`notes-${activityId}`)?.value || results[activityId]?.notes || '');
+      const existing = results[activityId];
+
+      const payload = { result, notes, updated_by: currentUser.id, updated_at: new Date().toISOString() };
+
+      if (result === 'nok' && extra.nok_owner_org_id) {
+        // Nieuwe NOK, aangevuld vanuit de pop-up
+        payload.nok_status = 'nieuw';
+        payload.nok_owner_org_id = extra.nok_owner_org_id;
+        payload.nok_set_at = new Date().toISOString();
+        payload.nok_resolved_at = null;
+      } else if (result === 'open') {
+        // NOK-opvolging heeft geen zin meer als de activiteit weer helemaal open staat
+        payload.nok_status = null;
+        payload.nok_owner_org_id = null;
+        payload.nok_set_at = null;
+        payload.nok_resolved_at = null;
+      }
+
+      let dbError;
+      if (existing) {
+        const res = await sb.from('activity_results').update(payload).eq('id', existing.id);
+        dbError = res.error;
+        if (!dbError) results[activityId] = { ...existing, ...payload };
+      } else {
+        const res = await sb.from('activity_results').insert({ activity_id: activityId, ...payload }).select().single();
+        dbError = res.error;
+        if (!dbError) results[activityId] = res.data;
+      }
+
+      if (dbError) {
+        if (dbError.message && dbError.message.includes('voorgaande activiteit')) {
+          alert('De voorgaande activiteit moet eerst op OK gezet worden voordat deze activiteit beoordeeld kan worden.');
+        } else if (dbError.message && dbError.message.includes('start pas op')) {
+          alert(dbError.message);
+        } else {
+          alert('Fout bij opslaan: ' + dbError.message);
+        }
+        return;
+      }
+
+      updateStats();
+      refreshNokBadge(true);
+
+      // Hertest-afhandeling: staat er voor deze activiteit een bevinding
+      // die op 'Opgelost, wacht op hertest' staat, en wordt nu alsnog OK
+      // geregistreerd? Dan is de hertest geslaagd — zet die bevinding
+      // door naar 'Hertest OK', zodat hij bij NOK-opvolging niet
+      // onterecht als openstaand blijft staan.
+      if (result === 'ok') {
+        const bevinding = latestBevindingByActivity[activityId];
+        if (bevinding && bevinding.status === 'opgelost_wacht_hertest') {
+          const resolvedAt = new Date().toISOString();
+          const { error: hertestError } = await sb.from('bevindingen')
+            .update({ status: 'hertest_ok', resolved_at: resolvedAt })
+            .eq('id', bevinding.id);
+          if (!hertestError) {
+            bevinding.status = 'hertest_ok';
+            bevinding.resolved_at = resolvedAt;
+            refreshNokBadge(true); // de openstaande NOK's en de Go/No-go-stand zijn zojuist veranderd
+          }
+        }
+      }
+
+      // Deze handeling wordt vanaf nu automatisch gelogd door een
+      // databasetrigger (zie activity-log-trigger-setup.sql) — niet meer
+      // hier vanuit de browser, om dubbele logregels te voorkomen.
+
+      // Herrender de volledige activiteitentabel van dit scenario, zodat de
+      // blokkade-status van volgende activiteiten ook meteen wordt bijgewerkt.
+      const bodyEl = document.getElementById(`detail-panel-${scenarioId}`);
+      if (bodyEl) {
+        const acts = activities.filter(a => a.scenario_id === scenarioId).sort((a,b) => a.sort_order - b.sort_order);
+        const tableWrap = bodyEl.querySelector('.activities-table-wrap');
+        if (tableWrap) tableWrap.outerHTML = renderActivities(acts);
+      }
+
+      // Update scenario rij
+      const sc = document.getElementById('sc-' + scenarioId);
+      if (sc) {
+        const newStatus = getScenarioStatus(scenarioId);
+        sc.className = `sc-row status-${newStatus}`;
+        const badge = sc.querySelector('.badge');
+        if (badge) { badge.className = `badge badge-${newStatus}`; badge.textContent = { ok:'Geslaagd', nok:'Mislukt', open:'Open' }[newStatus]; }
+        // Update balk
+        const acts = activities.filter(a => a.scenario_id === scenarioId);
+        const nTotal = acts.length;
+        const nOk  = acts.filter(a => (results[a.id]?.result||'open')==='ok').length;
+        const nNok = acts.filter(a => (results[a.id]?.result||'open')==='nok').length;
+        const bar = sc.querySelector('.tile-bar');
+        if (bar && nTotal > 0) {
+          bar.innerHTML =
+            (nOk  > 0 ? `<div class="tile-bar-ok" style="width:${Math.round(nOk/nTotal*100)}%"></div>` : '') +
+            (nNok > 0 ? `<div class="tile-bar-nok" style="width:${Math.round(nNok/nTotal*100)}%"></div>` : '');
+        }
+      }
+      updateStats();
+    }
+
+    function scheduleAutosave(activityId, scenarioId) {
+      clearTimeout(autosaveTimers[activityId]);
+      autosaveTimers[activityId] = setTimeout(() => saveNotes(activityId, scenarioId), 800);
+    }
+
+    async function saveNotes(activityId, scenarioId, notes) {
+      if (notes === undefined) notes = document.getElementById(`notes-${activityId}`)?.value || '';
+      const result = results[activityId]?.result || 'open';
+      const existing = results[activityId];
+      if (existing) {
+        const { error } = await sb.from('activity_results').update({ notes, updated_by: currentUser.id, updated_at: new Date().toISOString() }).eq('id', existing.id);
+        if (!error) { results[activityId] = { ...existing, notes }; return true; }
+        alert('Fout bij opslaan van de opmerking: ' + error.message);
+        return false;
+      } else {
+        const { data, error } = await sb.from('activity_results').insert({ activity_id: activityId, updated_by: currentUser.id, result, notes }).select().single();
+        if (!error) { results[activityId] = data; return true; }
+        alert('Fout bij opslaan van de opmerking: ' + error.message);
+        return false;
+      }
+    }
+
+    function exportCSV() {
+      const rows = [['Scenario ID', 'Scenario', 'Flow', 'Gegeven', 'Wanneer', 'Activiteit #', 'Activiteit', 'Verantw. organisatie', 'Acceptant', 'Resultaat', 'Opmerkingen', 'Bijgewerkt']];
+      scenarios.forEach(s => {
+        const acts = activities.filter(a => a.scenario_id === s.id).sort((a,b) => a.sort_order - b.sort_order);
+        acts.forEach(a => {
+          const r = results[a.id] || {};
+          rows.push([s.code, s.title, flowLabel(scenarioFlowMap[s.id]), s.gegeven || '', s.wanneer || '', a.sort_order, a.description, a.organisations?.name || '', a.acceptant_org?.name || '', r.result || 'open', r.notes || '', r.updated_at ? new Date(r.updated_at).toLocaleString('nl-NL') : '']);
+        });
+      });
+      const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url;
+      a.download = `ketentest_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click(); URL.revokeObjectURL(url);
+    }
+
+    function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 40;
+      const contentWidth = pageWidth - margin * 2;
+      let y = margin;
+
+      const ketentestNaam = activeKetentest?.naam || 'Ketentest';
+      const datum = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+      const sortedScenarios = [...scenarios].sort((a, b) => a.code.localeCompare(b.code));
+
+      const kleurGroen = [22, 163, 74];
+      const kleurRood = [220, 38, 38];
+      const kleurGrijs = [107, 114, 128];
+      const kleurBlauw = [21, 66, 115];
+      const kleurAccent = [57, 135, 12];
+
+      const statusLabel = { ok: 'Geslaagd', nok: 'Mislukt', open: 'Open' };
+      const statusKleur = { ok: kleurGroen, nok: kleurRood, open: kleurGrijs };
+
+      function ensureSpace(nodigeRuimte) {
+        if (y + nodigeRuimte > pageHeight - margin) {
+          doc.addPage();
+          y = margin;
+        }
+      }
+
+      function wrapText(text, maxWidth, fontSize) {
+        doc.setFontSize(fontSize);
+        return doc.splitTextToSize(text || '', maxWidth);
+      }
+
+      // ── Titelblok ──────────────────────────────────────────────
+      doc.setFillColor(...kleurAccent);
+      doc.rect(0, 0, pageWidth, 6, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.setTextColor(...kleurBlauw);
+      doc.text(ketentestNaam, margin, y + 20);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(...kleurGrijs);
+      doc.text(`Testrapport gegenereerd op ${datum}`, margin, y + 36);
+      y += 56;
+
+      // ── Samenvatting ────────────────────────────────────────────
+      const totalActs = activities.length;
+      const okCount = Object.values(results).filter(r => r.result === 'ok').length;
+      const nokCount = Object.values(results).filter(r => r.result === 'nok').length;
+      const openCount = totalActs - okCount - nokCount;
+
+      doc.setFillColor(245, 245, 245);
+      doc.roundedRect(margin, y, contentWidth, 36, 4, 4, 'F');
+
+      const summaryItems = [
+        { label: 'Scenario\'s', value: sortedScenarios.length, kleur: [26, 26, 26] },
+        { label: 'Activiteiten', value: totalActs, kleur: [26, 26, 26] },
+        { label: 'Geslaagd', value: okCount, kleur: kleurGroen },
+        { label: 'Mislukt', value: nokCount, kleur: kleurRood },
+        { label: 'Open', value: openCount, kleur: kleurGrijs },
+      ];
+      const itemWidth = contentWidth / summaryItems.length;
+      summaryItems.forEach((item, i) => {
+        const x = margin + i * itemWidth + 12;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(...item.kleur);
+        doc.text(String(item.value), x, y + 16);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(...kleurGrijs);
+        doc.text(item.label, x, y + 28);
+      });
+      y += 56;
+
+      // ── Per scenario ────────────────────────────────────────────
+      sortedScenarios.forEach(s => {
+        const acts = activities.filter(a => a.scenario_id === s.id).sort((a, b) => a.sort_order - b.sort_order);
+        const status = getScenarioStatus(s.id);
+
+        ensureSpace(40);
+
+        doc.setDrawColor(229, 231, 235);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 14;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(...kleurBlauw);
+        const titelTekst = `${s.code} — ${s.title || ''}`;
+        doc.text(titelTekst, margin, y);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...statusKleur[status]);
+        doc.text(`[${statusLabel[status]}]`, pageWidth - margin, y, { align: 'right' });
+        y += 16;
+
+        const flowTekst = flowLabel(scenarioFlowMap[s.id]);
+        if (flowTekst) {
+          ensureSpace(12);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(...kleurGrijs);
+          doc.text(`Flow: ${flowTekst}`, margin, y);
+          y += 14;
+        }
+
+        if (s.description) {
+          const lines = wrapText(s.description, contentWidth, 9);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(55, 65, 81);
+          lines.forEach(line => { ensureSpace(12); doc.text(line, margin, y); y += 12; });
+          y += 4;
+        }
+
+        if (s.gegeven) {
+          ensureSpace(12);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(...kleurAccent);
+          doc.text('GEGEVEN', margin, y);
+          y += 11;
+          const gegevenLines = wrapText(s.gegeven, contentWidth, 9);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(55, 65, 81);
+          gegevenLines.forEach(line => { ensureSpace(12); doc.text(line, margin, y); y += 12; });
+          y += 4;
+        }
+
+        if (s.wanneer) {
+          ensureSpace(12);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(...kleurAccent);
+          doc.text('WANNEER', margin, y);
+          y += 11;
+          const wanneerLines = wrapText(s.wanneer, contentWidth, 9);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(55, 65, 81);
+          wanneerLines.forEach(line => { ensureSpace(12); doc.text(line, margin, y); y += 12; });
+          y += 4;
+        }
+
+        if (!acts.length) {
+          doc.setFont('helvetica', 'italic');
+          doc.setFontSize(9);
+          doc.setTextColor(...kleurGrijs);
+          doc.text('Geen activiteiten.', margin, y);
+          y += 18;
+          return;
+        }
+
+        // Tabel header
+        const colWidths = { nr: 24, act: contentWidth * 0.34, org: contentWidth * 0.16, acc: contentWidth * 0.16, res: contentWidth * 0.12, notes: 0 };
+        colWidths.notes = contentWidth - colWidths.nr - colWidths.act - colWidths.org - colWidths.acc - colWidths.res;
+
+        function drawTableHeader() {
+          ensureSpace(20);
+          doc.setFillColor(234, 243, 224);
+          doc.rect(margin, y, contentWidth, 16, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(...kleurAccent);
+          let x = margin + 4;
+          doc.text('#', x, y + 11); x += colWidths.nr;
+          doc.text('Activiteit', x, y + 11); x += colWidths.act;
+          doc.text('Verantw.', x, y + 11); x += colWidths.org;
+          doc.text('Acceptant', x, y + 11); x += colWidths.acc;
+          doc.text('Resultaat', x, y + 11); x += colWidths.res;
+          doc.text('Opmerkingen', x, y + 11);
+          y += 16;
+        }
+
+        drawTableHeader();
+
+        acts.forEach(a => {
+          const r = results[a.id] || {};
+          const res = r.result || 'open';
+
+          const actLines = wrapText(a.description, colWidths.act - 6, 8);
+          const notesLines = wrapText(r.notes || '', colWidths.notes - 6, 8);
+          const rowLines = Math.max(actLines.length, notesLines.length, 1);
+          const rowHeight = rowLines * 10 + 6;
+
+          ensureSpace(rowHeight);
+          // Als we net een nieuwe pagina zijn begonnen, herhaal de header
+          if (y === margin) drawTableHeader();
+
+          doc.setDrawColor(229, 231, 235);
+          doc.setLineWidth(0.3);
+          doc.line(margin, y, pageWidth - margin, y);
+
+          let x = margin + 4;
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(26, 26, 26);
+          doc.text(String(a.sort_order), x, y + 9); x += colWidths.nr;
+
+          doc.text(actLines, x, y + 9); x += colWidths.act;
+
+          doc.setTextColor(...kleurGrijs);
+          doc.text(a.organisations?.name || '—', x, y + 9, { maxWidth: colWidths.org - 6 }); x += colWidths.org;
+          doc.text(a.acceptant_org?.name || '—', x, y + 9, { maxWidth: colWidths.acc - 6 }); x += colWidths.acc;
+
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(...statusKleur[res]);
+          doc.text(statusLabel[res], x, y + 9); x += colWidths.res;
+
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(55, 65, 81);
+          doc.text(notesLines, x, y + 9);
+
+          y += rowHeight;
+        });
+
+        y += 16;
+      });
+
+      // ── Openen in nieuw tabblad als PDF-bestand (geen printdialoog) ──
+      const bestandsnaam = `${ketentestNaam.replace(/[^a-z0-9]+/gi, '_')}_testrapport_${new Date().toISOString().slice(0,10)}.pdf`;
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      // De blob-URL pas later opruimen, zodat het net geopende tabblad de tijd
+      // heeft om het bestand te laden.
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+
+    async function doLogout() {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <footer style="background:#39870c; margin-top:48px; padding:40px 24px;">
+    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; align-items:start;">
+      <div>
+        <p style="font-size:20px; font-style:italic; color:#fff; font-weight:400; line-height:1.5;">Ketentest platform<br>voor PGB</p>
+      </div>
+      <div>
+        <p style="font-size:14px; font-weight:600; color:#fff; margin-bottom:12px;">Service</p>
+        <p style="font-size:13px; color:rgba(255,255,255,0.85); line-height:2;">
+          Zorginstituut Nederland<br>
+          <a href="https://www.istandaarden.nl" style="color:rgba(255,255,255,0.85); text-decoration:none;">iStandaarden</a><br>
+          <a href="https://www.zinl.nl" style="color:rgba(255,255,255,0.85); text-decoration:none;">zinl.nl</a>
+        </p>
+      </div>
+      <div>
+        <p style="font-size:14px; font-weight:600; color:#fff; margin-bottom:12px;">Over deze tool</p>
+        <p style="font-size:13px; color:rgba(255,255,255,0.85); line-height:2;">
+          Ketentestmonitor PGB<br>
+          Versie 0.9<br>
+          <a href="releasenotes.html" style="color:rgba(255,255,255,0.85); text-decoration:none;">Releasenotes</a>
+        </p>
+      </div>
+    </div>
+    <div style="max-width:1100px; margin:24px auto 0; padding-top:16px; border-top:1px solid rgba(255,255,255,0.2);">
+      <p style="font-size:12px; color:rgba(255,255,255,0.6);">© Zorginstituut Nederland</p>
+    </div>
+  </footer>
+
+</body>
+</html>

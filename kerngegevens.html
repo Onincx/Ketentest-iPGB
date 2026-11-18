@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kerngegevens — Ketentestmonitor PGB</title>
+  <link rel="preconnect" href="https://hhrfrawgrsxrmgxzfewd.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=33">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- ZIN Header -->
+  <div style="background:#ffffff;">
+    <img src="ZinBanner.png" alt="Zorginstituut Nederland" style="width:100%; max-width:960px; display:block; margin:0 auto;">
+  </div>
+  <style>
+    .topnav { background: #39870c !important; }
+    .topnav-logo { color: #fff !important; }
+    .topnav a { color: rgba(255,255,255,0.85) !important; }
+    .topnav a:hover, .topnav a.active { color: #fff !important; }
+  </style>
+
+  <nav class="topnav">
+    <a href="home.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
+    <a href="dashboard.html" id="navDashboardLink" style="display:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <div class="nav-dropdown">
+      <a href="app.html" id="navKetentestLink">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>
+        Ketentest <span class="nav-dropdown-caret">▾</span>
+      </a>
+      <div class="nav-dropdown-menu">
+        <span id="navScenariosSlot"></span>
+        <a href="flow.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Flow</a>
+        <a href="deelname.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg> Deelname</a>
+        <span id="navNotifBerichtenSlot"></span>
+        <a href="admin.html?tab=nok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Bevindingen</a>
+        <a href="admin.html?tab=entrycriteria"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Entry-criteria</a>
+        <a href="kerngegevens.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Kerngegevens</a>
+      </div>
+    </div>
+    <a href="mijn-acties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Voortgang</a>
+    <div class="nav-dropdown" id="adminLink" style="display:none;">
+      <a href="admin.html">Beheer <span class="nav-dropdown-caret">▾</span></a>
+      <div class="nav-dropdown-menu">
+        <a href="admin.html?tab=organisations">Organisaties</a>
+        <a href="admin.html?tab=users">Gebruikers</a>
+        <a href="admin.html?tab=notifications">Notificaties</a>
+        <a href="admin.html?tab=berichten">Berichten</a>
+        <a href="admin.html?tab=kenmerken">Functionele kenmerken</a>
+        <a href="admin.html?tab=ketentests">Ketentesten</a>
+        <a href="admin.html?tab=scenarios">Scenario's beheren</a>
+        <a href="admin.html?tab=logboek">Logboek</a>
+      </div>
+    </div>
+    <span id="ketentestLabel" style="display:none; background:rgba(255,255,255,0.15); color:#fff; border-radius:99px; padding:4px 14px; font-size:12px; font-weight:700; margin-left:16px;"></span>
+    <span id="nokBadge" style="display:none; background:#fee2e2; color:#7f1d1d; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='admin.html?tab=nok'" title="Klik om naar Bevindingen te gaan"></span>
+    <span id="mijnActiesBadge" style="display:none; background:#dbeafe; color:#1e3a8a; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='mijn-acties.html'" title="Klik om naar Mijn acties te gaan"></span>
+    <span id="gonogoBadge" style="display:none; background:#fef3c7; color:#92400e; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:700; margin-left:8px; cursor:pointer;" onclick="window.location.href='dashboard.html'" title="Klik om naar het Dashboard te gaan"></span>
+    <div class="topnav-right">
+      <span class="topnav-user" id="navUser"></span>
+      <span id="navOrg" style="background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85); border-radius:99px; padding:2px 10px; font-size:12px; margin-left:4px;"></span>
+      <button class="btn btn-ghost btn-sm" style="color:rgba(255,255,255,0.7);" onclick="doLogout()">Uitloggen</button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div id="alert" class="alert" style="display:none;"></div>
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>Kerngegevens</h1>
+        <p>Vaste gegevens die bij deze ketentest horen.</p>
+      </div>
+    </div>
+
+    <!-- Subtabbladen — dit is bewust code, geen door de beheerder
+         configureerbaar systeem: elke sectie is maatwerk en wordt per
+         stuk toegevoegd wanneer nodig. -->
+    <div class="tab-bar" style="margin-bottom:20px;">
+      <button class="tab-btn active" id="kg-tab-btn-uzoviagb" onclick="showKgTab('uzoviagb')">UZOVI en AGB-codes</button>
+      <button class="tab-btn" id="kg-tab-btn-postcodes" onclick="showKgTab('postcodes')">White listed postcodes</button>
+      <button class="tab-btn" id="kg-tab-btn-bsn" onclick="showKgTab('bsn')">Fictieve BSN's</button>
+      <button class="tab-btn" id="kg-tab-btn-indicatie" onclick="showKgTab('indicatie')">Indicatiebesluiten</button>
+    </div>
+
+    <!-- SUBTAB: UZOVI en AGB-codes -->
+    <div id="kg-tab-uzoviagb">
+      <div id="kgUzoviAgbForm" class="card" style="padding:18px 20px; margin-bottom:20px; display:none;">
+        <p class="eyebrow" style="margin-bottom:12px;">Rij toevoegen</p>
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+          <div style="min-width:220px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Organisatie</label>
+            <select id="kgOrgSelect" onchange="vulKgUzoviOpties()" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— kies —</option>
+            </select>
+          </div>
+          <div style="min-width:200px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">UZOVI-code</label>
+            <select id="kgUzoviSelect" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— eerst organisatie kiezen —</option>
+            </select>
+          </div>
+          <div style="min-width:160px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">AGB-code (optioneel, 8 cijfers)</label>
+            <input type="text" id="kgAgbInput" maxlength="8" placeholder="12345678" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+          </div>
+          <div style="min-width:150px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Model</label>
+            <select id="kgModelSelect" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— kies —</option>
+              <option value="estafette">Estafette</option>
+              <option value="netwerk">Netwerk</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="voegKgUzoviAgbToe()">Toevoegen</button>
+        </div>
+        <div id="alertKgUzoviAgb" class="alert" style="display:none; margin-top:12px;"></div>
+      </div>
+
+      <div class="card" style="padding:0;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Organisatie</th>
+                <th>UZOVI-code</th>
+                <th>AGB-code</th>
+                <th>Model</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="kgUzoviAgbTable"><tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:32px;">Laden...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBTAB: White listed postcodes -->
+    <div id="kg-tab-postcodes" style="display:none;">
+      <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+        <button class="btn btn-outline" onclick="exporteerPostcodes()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Exporteer naar Excel
+        </button>
+      </div>
+      <div id="kgPostcodesForm" class="card" style="padding:18px 20px; margin-bottom:20px; display:none;">
+        <p class="eyebrow" style="margin-bottom:12px;">Rij toevoegen</p>
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+          <div style="min-width:220px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Organisatie</label>
+            <select id="kgPcOrgSelect" onchange="vulKgPcUzoviOpties()" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— kies —</option>
+            </select>
+          </div>
+          <div style="min-width:200px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">UZOVI-code</label>
+            <select id="kgPcUzoviSelect" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— eerst organisatie kiezen —</option>
+            </select>
+          </div>
+          <div style="min-width:120px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Postcode</label>
+            <input type="text" id="kgPcPostcodeInput" maxlength="6" placeholder="1111AA" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+          </div>
+          <div style="min-width:160px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Plaats</label>
+            <input type="text" id="kgPcPlaatsInput" placeholder="Bijv. Utrecht" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+          </div>
+          <div style="min-width:220px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Adres</label>
+            <input type="text" id="kgPcAdresInput" placeholder="Bijv. Hoofdstraat 1" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+          </div>
+          <button class="btn btn-primary" onclick="voegKgPostcodeToe()">Toevoegen</button>
+        </div>
+        <div id="alertKgPostcodes" class="alert" style="display:none; margin-top:12px;"></div>
+      </div>
+
+      <div class="card" style="padding:0;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Organisatie</th>
+                <th>UZOVI-code</th>
+                <th>Postcode</th>
+                <th>Plaats</th>
+                <th>Adres</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="kgPostcodesTable"><tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:32px;">Laden...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBTAB: Fictieve BSN's -->
+    <div id="kg-tab-bsn" style="display:none;">
+      <div id="kgBsnForm" class="card" style="padding:18px 20px; margin-bottom:20px; display:none;">
+        <p class="eyebrow" style="margin-bottom:6px;">Lijst uploaden per organisatie</p>
+        <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Kies een organisatie en plak de fictieve BSN's, één per regel (of gescheiden door spaties/komma's) — bijvoorbeeld zo'n 100 stuks tegelijk. Elk BSN moet precies 9 cijfers zijn. Reeds bestaande BSN's voor deze organisatie worden overgeslagen.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+          <div style="min-width:260px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;">Organisatie</label>
+            <select id="kgBsnOrgSelect" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">— kies —</option>
+            </select>
+          </div>
+        </div>
+        <textarea id="kgBsnTextarea" placeholder="123456789&#10;234567890&#10;345678901&#10;..." style="width:100%; min-height:140px; font-family:monospace; font-size:13px; padding:10px; border:1px solid var(--border); border-radius:6px; margin-bottom:10px;"></textarea>
+        <button class="btn btn-primary" onclick="uploadKgBsnLijst()">Uploaden</button>
+        <div id="alertKgBsn" class="alert" style="display:none; margin-top:12px;"></div>
+      </div>
+
+      <div id="kgBsnOverzicht"></div>
+    </div>
+
+    <!-- SUBTAB: Indicatiebesluiten -->
+    <div id="kg-tab-indicatie" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <p style="font-size:12.5px; color:var(--text-muted); margin:0 0 8px;">Ingevuld door gebruikers vanuit Testscenario's, bij een startscenario van een flow.</p>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:12px; font-weight:600; color:var(--text-muted);">Concessiehouder</label>
+            <select id="kgIndicatieConcessiehouderFilter" onchange="renderKgIndicatieTable()" style="padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
+              <option value="">Alle</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-outline" id="btnKgIndicatieExport" onclick="exporteerIndicatiebesluiten()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Exporteer naar Excel
+        </button>
+      </div>
+      <div class="card" style="padding:0;">
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table style="white-space:nowrap;">
+            <thead>
+              <tr id="kgIndicatieKop">
+                <th>Clientnaam</th>
+                <th>Clientnummer</th>
+                <th>Fictief BSN</th>
+                <th>TechnischID</th>
+                <th>Datum afgifte</th>
+                <th>Datum ingang</th>
+                <th>Concessiehouder</th>
+                <th>UZOVI</th>
+                <th>Postcode</th>
+                <th>Plaats</th>
+                <th>Adres</th>
+                <th class="kg-ind-th">Grondslag 1</th>
+                <th class="kg-ind-th">Grondslag 2</th>
+                <th class="kg-ind-th">Grondslag 3</th>
+                <th class="kg-ind-th">Grondslag 4</th>
+                <th class="kg-ind-th">ZZP-code 1</th>
+                <th class="kg-ind-th">ZZP-code 2</th>
+                <th>VoorkeurClient</th>
+                <th>UZOVI-uitvoerendZK</th>
+                <th>VoorkeurAanbieder</th>
+              </tr>
+            </thead>
+            <tbody id="kgIndicatieTable"><tr><td colspan="20" style="text-align:center; color:var(--text-muted); padding:32px;">Laden...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js?v=48"></script>
+  <script>
+    function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;'); }
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+      ['alertKgUzoviAgb', 'alertKgEdit', 'alertKgPostcodes', 'alertKgPcEdit', 'alertKgBsn'].forEach(a => {
+        const el = document.getElementById(a);
+        if (el) el.style.display = 'none';
+      });
+    }
+    function closeModalOverlay(e, id) {
+      // Bewust uitgeschakeld: een pop-up mag niet meer sluiten door per
+      // ongeluk buiten het venster te klikken — dat kostte gebruikers
+      // eerder al ingevulde gegevens. Sluiten kan alleen nog bewust, via
+      // het kruisje of een Annuleren/Sluiten-knop.
+    }
+    let currentUser = null, currentProfile = null, activeKetentest = null, effectiefOrgId = null;
+    let orgs = [], activities = [], scenarios = [], zorgkantoorcodes = [], kgUzoviAgbRijen = [], kgPostcodeRijen = [], kgBsnRijen = [], indicatiebesluiten = [];
+    // Grondslag/ZZP-code (en eventuele andere velden) zijn gewone keuzelijst-kenmerken in de groep 'Indicatie'
+    // zodra die groep bestaat (script indicatie-naar-kenmerken.sql); anders de oude kolommen van indicatiebesluiten.
+    let kgIndicatieAlsKenmerk = false, kgIndDefs = [], kgIndInstanties = [], kgIndWaarden = [];
+
+    function showKgTab(tab) {
+      document.getElementById('kg-tab-uzoviagb').style.display = tab === 'uzoviagb' ? '' : 'none';
+      document.getElementById('kg-tab-btn-uzoviagb').classList.toggle('active', tab === 'uzoviagb');
+      document.getElementById('kg-tab-postcodes').style.display = tab === 'postcodes' ? '' : 'none';
+      document.getElementById('kg-tab-btn-postcodes').classList.toggle('active', tab === 'postcodes');
+      document.getElementById('kg-tab-bsn').style.display = tab === 'bsn' ? '' : 'none';
+      document.getElementById('kg-tab-btn-bsn').classList.toggle('active', tab === 'bsn');
+      document.getElementById('kg-tab-indicatie').style.display = tab === 'indicatie' ? '' : 'none';
+      document.getElementById('kg-tab-btn-indicatie').classList.toggle('active', tab === 'indicatie');
+    }
+
+    function betrokkenOrgsVoorKetentest() {
+      const orgIds = new Set();
+      activities.forEach(a => {
+        if (a.organisation_id) orgIds.add(a.organisation_id);
+        if (a.acceptant_org_id) orgIds.add(a.acceptant_org_id);
+      });
+      return orgs.filter(o => orgIds.has(o.id)).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function vulKgOrgSelect() {
+      const select = document.getElementById('kgOrgSelect');
+      const betrokkenOrgs = betrokkenOrgsVoorKetentest();
+      select.innerHTML = '<option value="">— kies —</option>' + betrokkenOrgs.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('');
+    }
+
+    function vulKgUzoviOpties() {
+      const orgId = document.getElementById('kgOrgSelect').value;
+      const select = document.getElementById('kgUzoviSelect');
+      if (!orgId) { select.innerHTML = '<option value="">— eerst organisatie kiezen —</option>'; return; }
+      const codes = zorgkantoorcodes.filter(z => z.organisation_id === orgId);
+      if (!codes.length) { select.innerHTML = '<option value="">— geen UZOVI-codes bekend voor deze organisatie —</option>'; return; }
+      select.innerHTML = '<option value="">— kies —</option>' + codes.map(z => `<option value="${esc(z.code)}">${esc(z.code)}</option>`).join('');
+    }
+
+    async function voegKgUzoviAgbToe() {
+      const orgId = document.getElementById('kgOrgSelect').value;
+      const uzovi = document.getElementById('kgUzoviSelect').value;
+      const agb = document.getElementById('kgAgbInput').value.trim();
+      const model = document.getElementById('kgModelSelect').value;
+
+      if (!orgId) { showAlert('Kies een organisatie.', 'error', 'alertKgUzoviAgb'); return; }
+      if (!uzovi) { showAlert('Kies een UZOVI-code.', 'error', 'alertKgUzoviAgb'); return; }
+      if (agb && !/^[0-9]{8}$/.test(agb)) { showAlert('AGB-code moet, indien ingevuld, precies 8 cijfers zijn.', 'error', 'alertKgUzoviAgb'); return; }
+      if (!model) { showAlert('Kies een model (Estafette of Netwerk).', 'error', 'alertKgUzoviAgb'); return; }
+
+      const { data, error } = await sb.from('kerngegevens_uzovi_agb').insert({
+        ketentest_id: activeKetentest.id,
+        organisation_id: orgId,
+        uzovi_code: uzovi,
+        agb_code: agb || null,
+        model,
+        created_by: currentUser?.id || null,
+      }).select().single();
+
+      if (error) { showAlert('Fout bij opslaan: ' + error.message, 'error', 'alertKgUzoviAgb'); return; }
+
+      kgUzoviAgbRijen.push(data);
+      document.getElementById('kgAgbInput').value = '';
+      document.getElementById('kgModelSelect').value = '';
+      renderKgUzoviAgbTable();
+      showAlert('Rij toegevoegd.', 'success', 'alertKgUzoviAgb');
+    }
+
+    function verwijderKgUzoviAgb(id) {
+      if (!window.isPageAdmin) return;
+      document.getElementById('confirmMsg').textContent = 'Deze rij verwijderen?';
+      document.getElementById('confirmBtn').onclick = async () => {
+        const { error } = await sb.from('kerngegevens_uzovi_agb').delete().eq('id', id);
+        closeModal('modalConfirm');
+        if (error) { showAlert('Fout bij verwijderen: ' + error.message, 'error'); return; }
+        kgUzoviAgbRijen = kgUzoviAgbRijen.filter(r => r.id !== id);
+        renderKgUzoviAgbTable();
+      };
+      openModal('modalConfirm');
+    }
+
+    function openKgEditModal(id) {
+      if (!window.isPageAdmin) return;
+      const r = kgUzoviAgbRijen.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById('kgEditId').value = r.id;
+      const betrokkenOrgs = betrokkenOrgsVoorKetentest();
+      document.getElementById('kgEditOrgSelect').innerHTML = betrokkenOrgs.map(o => `<option value="${o.id}" ${o.id === r.organisation_id ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
+      vulKgEditUzoviOpties(r.uzovi_code);
+      document.getElementById('kgEditAgbInput').value = r.agb_code || '';
+      document.getElementById('kgEditModelSelect').value = r.model;
+      document.getElementById('alertKgEdit').style.display = 'none';
+      openModal('modalKgEdit');
+    }
+
+    function vulKgEditUzoviOpties(geselecteerdeCode) {
+      const orgId = document.getElementById('kgEditOrgSelect').value;
+      const select = document.getElementById('kgEditUzoviSelect');
+      const codes = zorgkantoorcodes.filter(z => z.organisation_id === orgId);
+      if (!codes.length) { select.innerHTML = '<option value="">— geen UZOVI-codes bekend voor deze organisatie —</option>'; return; }
+      select.innerHTML = codes.map(z => `<option value="${esc(z.code)}" ${z.code === geselecteerdeCode ? 'selected' : ''}>${esc(z.code)}</option>`).join('');
+    }
+
+    async function saveKgEdit() {
+      const id = document.getElementById('kgEditId').value;
+      const orgId = document.getElementById('kgEditOrgSelect').value;
+      const uzovi = document.getElementById('kgEditUzoviSelect').value;
+      const agb = document.getElementById('kgEditAgbInput').value.trim();
+      const model = document.getElementById('kgEditModelSelect').value;
+
+      if (!orgId) { showAlert('Kies een organisatie.', 'error', 'alertKgEdit'); return; }
+      if (!uzovi) { showAlert('Kies een UZOVI-code.', 'error', 'alertKgEdit'); return; }
+      if (agb && !/^[0-9]{8}$/.test(agb)) { showAlert('AGB-code moet, indien ingevuld, precies 8 cijfers zijn.', 'error', 'alertKgEdit'); return; }
+      if (!model) { showAlert('Kies een model.', 'error', 'alertKgEdit'); return; }
+
+      const { data, error } = await sb.from('kerngegevens_uzovi_agb')
+        .update({ organisation_id: orgId, uzovi_code: uzovi, agb_code: agb || null, model })
+        .eq('id', id).select().single();
+
+      if (error) { showAlert('Fout bij opslaan: ' + error.message, 'error', 'alertKgEdit'); return; }
+
+      const idx = kgUzoviAgbRijen.findIndex(r => r.id === id);
+      if (idx !== -1) kgUzoviAgbRijen[idx] = data;
+      closeModal('modalKgEdit');
+      renderKgUzoviAgbTable();
+      showAlert('Rij bijgewerkt.', 'success');
+    }
+
+    function renderKgUzoviAgbTable() {
+      const tb = document.getElementById('kgUzoviAgbTable');
+      if (!kgUzoviAgbRijen.length) {
+        tb.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>Nog geen UZOVI-/AGB-codes toegevoegd.</p></div></td></tr>';
+        return;
+      }
+      const modelInfo = { estafette: { bg: '#fef3c7', fg: '#92400e', label: 'Estafette' }, netwerk: { bg: '#dbeafe', fg: '#1e40af', label: 'Netwerk' } };
+      const rijen = [...kgUzoviAgbRijen].sort((a, b) => {
+        const naamA = orgs.find(o => o.id === a.organisation_id)?.name || '';
+        const naamB = orgs.find(o => o.id === b.organisation_id)?.name || '';
+        return naamA.localeCompare(naamB);
+      });
+      tb.innerHTML = rijen.map(r => {
+        const org = orgs.find(o => o.id === r.organisation_id);
+        const k = org ? getOrgKleur(org.id, orgs) : { bg: '#f3f4f6', fg: '#6b7280' };
+        const m = modelInfo[r.model] || { bg: '#f3f4f6', fg: '#6b7280', label: r.model || '—' };
+        return `<tr>
+          <td><span class="org-pill" style="background:${k.bg}; color:${k.fg};">${esc(org?.name || 'Onbekend')}</span></td>
+          <td><strong>${esc(r.uzovi_code)}</strong></td>
+          <td>${esc(r.agb_code || '—')}</td>
+          <td><span style="background:${m.bg}; color:${m.fg}; border-radius:99px; padding:2px 10px; font-size:11px; font-weight:700;">${esc(m.label)}</span></td>
+          <td style="text-align:right; white-space:nowrap;">
+            ${window.isPageAdmin ? `
+              <button class="btn btn-ghost btn-sm btn-icon" onclick="openKgEditModal('${r.id}')" title="Bewerken"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              <button class="btn btn-ghost btn-sm btn-icon" onclick="verwijderKgUzoviAgb('${r.id}')" title="Verwijderen"><span style="color:var(--danger)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></span></button>
+            ` : ''}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ---- WHITE LISTED POSTCODES (zelfde werking als UZOVI/AGB) ----
+    function vulKgPcOrgSelect() {
+      const select = document.getElementById('kgPcOrgSelect');
+      const betrokkenOrgs = betrokkenOrgsVoorKetentest();
+      select.innerHTML = '<option value="">— kies —</option>' + betrokkenOrgs.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('');
+    }
+
+    function vulKgPcUzoviOpties() {
+      const orgId = document.getElementById('kgPcOrgSelect').value;
+      const select = document.getElementById('kgPcUzoviSelect');
+      if (!orgId) { select.innerHTML = '<option value="">— eerst organisatie kiezen —</option>'; return; }
+      const codes = zorgkantoorcodes.filter(z => z.organisation_id === orgId);
+      if (!codes.length) { select.innerHTML = '<option value="">— geen UZOVI-codes bekend voor deze organisatie —</option>'; return; }
+      select.innerHTML = '<option value="">— kies —</option>' + codes.map(z => `<option value="${esc(z.code)}">${esc(z.code)}</option>`).join('');
+    }
+
+    function normaliseerPostcode(pc) { return pc.trim().toUpperCase().replace(/\s+/g, ''); }
+
+    async function voegKgPostcodeToe() {
+      const orgId = document.getElementById('kgPcOrgSelect').value;
+      const uzovi = document.getElementById('kgPcUzoviSelect').value;
+      const postcode = normaliseerPostcode(document.getElementById('kgPcPostcodeInput').value);
+      const plaats = document.getElementById('kgPcPlaatsInput').value.trim();
+      const adres = document.getElementById('kgPcAdresInput').value.trim();
+
+      if (!orgId) { showAlert('Kies een organisatie.', 'error', 'alertKgPostcodes'); return; }
+      if (!uzovi) { showAlert('Kies een UZOVI-code.', 'error', 'alertKgPostcodes'); return; }
+      if (!/^[0-9]{4}[A-Z]{2}$/.test(postcode)) { showAlert('Postcode moet het formaat 1111AA hebben.', 'error', 'alertKgPostcodes'); return; }
+      if (!plaats) { showAlert('Vul een plaats in.', 'error', 'alertKgPostcodes'); return; }
+      if (!adres) { showAlert('Vul een adres in.', 'error', 'alertKgPostcodes'); return; }
+
+      const { data, error } = await sb.from('kerngegevens_whitelist_postcodes').insert({
+        ketentest_id: activeKetentest.id,
+        organisation_id: orgId,
+        uzovi_code: uzovi,
+        postcode, plaats, adres,
+        created_by: currentUser?.id || null,
+      }).select().single();
+
+      if (error) { showAlert('Fout bij opslaan: ' + error.message, 'error', 'alertKgPostcodes'); return; }
+
+      kgPostcodeRijen.push(data);
+      document.getElementById('kgPcPostcodeInput').value = '';
+      document.getElementById('kgPcPlaatsInput').value = '';
+      document.getElementById('kgPcAdresInput').value = '';
+      renderKgPostcodesTable();
+      showAlert('Rij toegevoegd.', 'success', 'alertKgPostcodes');
+    }
+
+    function verwijderKgPostcode(id) {
+      if (!window.isPageAdmin) return;
+      document.getElementById('confirmMsg').textContent = 'Deze rij verwijderen?';
+      document.getElementById('confirmBtn').onclick = async () => {
+        const { error } = await sb.from('kerngegevens_whitelist_postcodes').delete().eq('id', id);
+        closeModal('modalConfirm');
+        if (error) { showAlert('Fout bij verwijderen: ' + error.message, 'error'); return; }
+        kgPostcodeRijen = kgPostcodeRijen.filter(r => r.id !== id);
+        renderKgPostcodesTable();
+      };
+      openModal('modalConfirm');
+    }
+
+    function openKgPcEditModal(id) {
+      if (!window.isPageAdmin) return;
+      const r = kgPostcodeRijen.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById('kgPcEditId').value = r.id;
+      const betrokkenOrgs = betrokkenOrgsVoorKetentest();
+      document.getElementById('kgPcEditOrgSelect').innerHTML = betrokkenOrgs.map(o => `<option value="${o.id}" ${o.id === r.organisation_id ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
+      vulKgPcEditUzoviOpties(r.uzovi_code);
+      document.getElementById('kgPcEditPostcodeInput').value = r.postcode;
+      document.getElementById('kgPcEditPlaatsInput').value = r.plaats;
+      document.getElementById('kgPcEditAdresInput').value = r.adres;
+      document.getElementById('alertKgPcEdit').style.display = 'none';
+      openModal('modalKgPcEdit');
+    }
+
+    function vulKgPcEditUzoviOpties(geselecteerdeCode) {
+      const orgId = document.getElementById('kgPcEditOrgSelect').value;
+      const select = document.getElementById('kgPcEditUzoviSelect');
+      const codes = zorgkantoorcodes.filter(z => z.organisation_id === orgId);
+      if (!codes.length) { select.innerHTML = '<option value="">— geen UZOVI-codes bekend voor deze organisatie —</option>'; return; }
+      select.innerHTML = codes.map(z => `<option value="${esc(z.code)}" ${z.code === geselecteerdeCode ? 'selected' : ''}>${esc(z.code)}</option>`).join('');
+    }
+
+    async function saveKgPcEdit() {
+      const id = document.getElementById('kgPcEditId').value;
+      const orgId = document.getElementById('kgPcEditOrgSelect').value;
+      const uzovi = document.getElementById('kgPcEditUzoviSelect').value;
+      const postcode = normaliseerPostcode(document.getElementById('kgPcEditPostcodeInput').value);
+      const plaats = document.getElementById('kgPcEditPlaatsInput').value.trim();
+      const adres = document.getElementById('kgPcEditAdresInput').value.trim();
+
+      if (!orgId) { showAlert('Kies een organisatie.', 'error', 'alertKgPcEdit'); return; }
+      if (!uzovi) { showAlert('Kies een UZOVI-code.', 'error', 'alertKgPcEdit'); return; }
+      if (!/^[0-9]{4}[A-Z]{2}$/.test(postcode)) { showAlert('Postcode moet het formaat 1111AA hebben.', 'error', 'alertKgPcEdit'); return; }
+      if (!plaats) { showAlert('Vul een plaats in.', 'error', 'alertKgPcEdit'); return; }
+      if (!adres) { showAlert('Vul een adres in.', 'error', 'alertKgPcEdit'); return; }
+
+      const { data, error } = await sb.from('kerngegevens_whitelist_postcodes')
+        .update({ organisation_id: orgId, uzovi_code: uzovi, postcode, plaats, adres })
+        .eq('id', id).select().single();
+
+      if (error) { showAlert('Fout bij opslaan: ' + error.message, 'error', 'alertKgPcEdit'); return; }
+
+      const idx = kgPostcodeRijen.findIndex(r => r.id === id);
+      if (idx !== -1) kgPostcodeRijen[idx] = data;
+      closeModal('modalKgPcEdit');
+      renderKgPostcodesTable();
+      showAlert('Rij bijgewerkt.', 'success');
+    }
+
+    function renderKgPostcodesTable() {
+      const tb = document.getElementById('kgPostcodesTable');
+      if (!kgPostcodeRijen.length) {
+        tb.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>Nog geen white listed postcodes toegevoegd.</p></div></td></tr>';
+        return;
+      }
+      const rijen = [...kgPostcodeRijen].sort((a, b) => {
+        const naamA = orgs.find(o => o.id === a.organisation_id)?.name || '';
+        const naamB = orgs.find(o => o.id === b.organisation_id)?.name || '';
+        return naamA.localeCompare(naamB);
+      });
+      tb.innerHTML = rijen.map(r => {
+        const org = orgs.find(o => o.id === r.organisation_id);
+        const k = org ? getOrgKleur(org.id, orgs) : { bg: '#f3f4f6', fg: '#6b7280' };
+        return `<tr>
+          <td><span class="org-pill" style="background:${k.bg}; color:${k.fg};">${esc(org?.name || 'Onbekend')}</span></td>
+          <td><strong>${esc(r.uzovi_code)}</strong></td>
+          <td>${esc(r.postcode)}</td>
+          <td>${esc(r.plaats)}</td>
+          <td>${esc(r.adres)}</td>
+          <td style="text-align:right; white-space:nowrap;">
+            ${window.isPageAdmin ? `
+              <button class="btn btn-ghost btn-sm btn-icon" onclick="openKgPcEditModal('${r.id}')" title="Bewerken"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              <button class="btn btn-ghost btn-sm btn-icon" onclick="verwijderKgPostcode('${r.id}')" title="Verwijderen"><span style="color:var(--danger)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></span></button>
+            ` : ''}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function exporteerPostcodes() {
+      if (!kgPostcodeRijen.length) { showAlert('Er zijn geen white listed postcodes om te exporteren.', 'error'); return; }
+      const rows = [...kgPostcodeRijen]
+        .sort((a, b) => (orgs.find(o => o.id === a.organisation_id)?.name || '').localeCompare(orgs.find(o => o.id === b.organisation_id)?.name || ''))
+        .map(r => ({
+          Organisatie: orgs.find(o => o.id === r.organisation_id)?.name || '',
+          'UZOVI-code': r.uzovi_code,
+          Postcode: r.postcode,
+          Plaats: r.plaats,
+          Adres: r.adres,
+        }));
+      const ws = XLSX.utils.json_to_sheet(rows);
+      ws['!cols'] = [{ wch: 26 }, { wch: 12 }, { wch: 10 }, { wch: 18 }, { wch: 26 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'White listed postcodes');
+      XLSX.writeFile(wb, `white-listed-postcodes-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    }
+
+    // ---- FICTIEVE BSN'S (bulk-upload per organisatie) ----
+    function vulKgBsnOrgSelect() {
+      const select = document.getElementById('kgBsnOrgSelect');
+      const betrokkenOrgs = betrokkenOrgsVoorKetentest();
+      select.innerHTML = '<option value="">— kies —</option>' + betrokkenOrgs.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('');
+    }
+
+    async function uploadKgBsnLijst() {
+      const orgId = document.getElementById('kgBsnOrgSelect').value;
+      const ruweTekst = document.getElementById('kgBsnTextarea').value;
+
+      if (!orgId) { showAlert('Kies een organisatie.', 'error', 'alertKgBsn'); return; }
+
+      // Splits op regels, spaties, komma's en puntkomma's; lege stukken eruit.
+      const kandidaten = ruweTekst.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
+      if (!kandidaten.length) { showAlert('Plak minstens 1 BSN.', 'error', 'alertKgBsn'); return; }
+
+      const geldig = [];
+      const ongeldig = [];
+      const gezien = new Set();
+      kandidaten.forEach(bsn => {
+        if (!/^[0-9]{9}$/.test(bsn)) { ongeldig.push(bsn); return; }
+        if (gezien.has(bsn)) return; // dubbel binnen de plak zelf, stilzwijgend overslaan
+        gezien.add(bsn);
+        geldig.push(bsn);
+      });
+
+      if (!geldig.length) {
+        showAlert(`Geen enkele geldige regel gevonden (moet precies 9 cijfers zijn). Ongeldig: ${ongeldig.slice(0, 5).join(', ')}${ongeldig.length > 5 ? ', ...' : ''}`, 'error', 'alertKgBsn');
+        return;
+      }
+
+      // Al bestaande BSN's voor deze organisatie overslaan (voorkomt een
+      // fout op de unieke-combinatie-check bij opnieuw uploaden van een
+      // deels overlappende lijst).
+      const bestaandeBsns = new Set(kgBsnRijen.filter(r => r.organisation_id === orgId).map(r => r.bsn));
+      const nieuw = geldig.filter(bsn => !bestaandeBsns.has(bsn));
+      const overgeslagen = geldig.length - nieuw.length;
+
+      if (!nieuw.length) {
+        showAlert('Alle geldige BSN\'s stonden al in de lijst van deze organisatie.', 'error', 'alertKgBsn');
+        return;
+      }
+
+      const { data, error } = await sb.from('kerngegevens_fictieve_bsn').insert(
+        nieuw.map(bsn => ({ ketentest_id: activeKetentest.id, organisation_id: orgId, bsn, created_by: currentUser?.id || null }))
+      ).select();
+
+      if (error) { showAlert('Fout bij opslaan: ' + error.message, 'error', 'alertKgBsn'); return; }
+
+      kgBsnRijen.push(...data);
+      document.getElementById('kgBsnTextarea').value = '';
+      renderKgBsnOverzicht();
+
+      const meldingDelen = [`${data.length} BSN${data.length !== 1 ? "'s" : ''} toegevoegd.`];
+      if (overgeslagen > 0) meldingDelen.push(`${overgeslagen} stond${overgeslagen !== 1 ? 'en' : ''} al in de lijst en ${overgeslagen !== 1 ? 'zijn' : 'is'} overgeslagen.`);
+      if (ongeldig.length > 0) meldingDelen.push(`${ongeldig.length} regel${ongeldig.length !== 1 ? 's waren' : ' was'} ongeldig (geen 9 cijfers) en ${ongeldig.length !== 1 ? 'zijn' : 'is'} genegeerd.`);
+      showAlert(meldingDelen.join(' '), ongeldig.length ? 'error' : 'success', 'alertKgBsn');
+    }
+
+    function verwijderKgBsn(id) {
+      if (!window.isPageAdmin) return;
+      document.getElementById('confirmMsg').textContent = 'Dit BSN verwijderen?';
+      document.getElementById('confirmBtn').onclick = async () => {
+        const { error } = await sb.from('kerngegevens_fictieve_bsn').delete().eq('id', id);
+        closeModal('modalConfirm');
+        if (error) { showAlert('Fout bij verwijderen: ' + error.message, 'error'); return; }
+        kgBsnRijen = kgBsnRijen.filter(r => r.id !== id);
+        renderKgBsnOverzicht();
+      };
+      openModal('modalConfirm');
+    }
+
+    function verwijderAlleKgBsnVoorOrg(orgId, orgNaam) {
+      if (!window.isPageAdmin) return;
+      const aantal = kgBsnRijen.filter(r => r.organisation_id === orgId).length;
+      document.getElementById('confirmMsg').textContent = `Alle ${aantal} fictieve BSN's van "${orgNaam}" verwijderen?`;
+      document.getElementById('confirmBtn').onclick = async () => {
+        const { error } = await sb.from('kerngegevens_fictieve_bsn').delete().eq('ketentest_id', activeKetentest.id).eq('organisation_id', orgId);
+        closeModal('modalConfirm');
+        if (error) { showAlert('Fout bij verwijderen: ' + error.message, 'error'); return; }
+        kgBsnRijen = kgBsnRijen.filter(r => r.organisation_id !== orgId);
+        renderKgBsnOverzicht();
+      };
+      openModal('modalConfirm');
+    }
+
+    // Compacte weergave per organisatie (chips) — een volle tabel met
+    // tot wel honderden rijen per organisatie zou onwerkbaar lang worden.
+    function renderKgBsnOverzicht() {
+      const el = document.getElementById('kgBsnOverzicht');
+      const orgIdsMetBsn = [...new Set(kgBsnRijen.map(r => r.organisation_id))];
+      if (!orgIdsMetBsn.length) {
+        el.innerHTML = '<div class="card" style="padding:0;"><div class="empty-state"><p>Nog geen fictieve BSN\'s geüpload.</p></div></div>';
+        return;
+      }
+      const relevantOrgs = orgs.filter(o => orgIdsMetBsn.includes(o.id)).sort((a, b) => a.name.localeCompare(b.name));
+
+      el.innerHTML = relevantOrgs.map(org => {
+        const k = getOrgKleur(org.id, orgs);
+        const bsnsVoorOrg = kgBsnRijen.filter(r => r.organisation_id === org.id).sort((a, b) => a.bsn.localeCompare(b.bsn));
+        return `<div style="margin-bottom:20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="display:inline-block; background:${k.bg}; color:${k.fg}; border-radius:99px; padding:3px 14px; font-size:12px; font-weight:700;">${esc(org.name)}</span>
+              <span style="font-size:13px; color:var(--text-muted);">${bsnsVoorOrg.length} BSN${bsnsVoorOrg.length !== 1 ? "'s" : ''}</span>
+            </div>
+            ${window.isPageAdmin ? `<button class="btn btn-ghost btn-sm" style="color:var(--danger); font-size:12px;" onclick="verwijderAlleKgBsnVoorOrg('${org.id}','${esc(org.name).replace(/'/g, "\\'")}')">Alles verwijderen</button>` : ''}
+          </div>
+          <div class="card" style="padding:14px 16px; display:flex; flex-wrap:wrap; gap:6px;">
+            ${bsnsVoorOrg.map(r => `<span style="display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:3px 6px 3px 10px; font-family:monospace; font-size:12.5px;">
+              ${esc(r.bsn)}
+              ${window.isPageAdmin ? `<button onclick="verwijderKgBsn('${r.id}')" title="Verwijderen" style="background:none; border:none; cursor:pointer; color:var(--text-muted); padding:2px; display:flex; align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>` : ''}
+            </span>`).join('')}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ---- INDICATIEBESLUITEN (alleen-lezen + Excel-export) ----
+    // Bepaalt de organisatie (concessiehouder) die bij het UZOVI-veld van
+    // dit indicatiebesluit hoort, via de koppeling in UZOVI en AGB.
+    function bepaalConcessiehouder(r) {
+      const koppeling = kgUzoviAgbRijen.find(u => u.uzovi_code === r.uzovi);
+      return koppeling ? orgs.find(o => o.id === koppeling.organisation_id) : null;
+    }
+
+    // Vindt de postcode/plaats die bij de combinatie UZOVI + Adres van dit
+    // indicatiebesluit hoort, via White listed postcodes.
+    function vindPostcodePlaats(r) {
+      return kgPostcodeRijen.find(p => p.uzovi_code === r.uzovi && p.adres === r.adres) || null;
+    }
+
+    function vulKgIndicatieConcessiehouderFilter() {
+      const select = document.getElementById('kgIndicatieConcessiehouderFilter');
+      const huidig = select.value;
+      const concessiehouders = [...new Map(
+        indicatiebesluiten.map(r => bepaalConcessiehouder(r)).filter(Boolean).map(o => [o.id, o])
+      ).values()].sort((a, b) => a.name.localeCompare(b.name));
+      select.innerHTML = '<option value="">Alle</option>' + concessiehouders.map(o => `<option value="${o.id}" ${o.id === huidig ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
+    }
+
+    // De op dit moment gefilterde set indicatiebesluiten — gedeeld door
+    // zowel de tabelweergave als de export, zodat een export nooit meer
+    // bevat dan wat er op dat moment ook echt op het scherm staat.
+    function gefilterdeIndicatiebesluiten() {
+      const concessiehouderId = document.getElementById('kgIndicatieConcessiehouderFilter')?.value || '';
+      if (!concessiehouderId) return indicatiebesluiten;
+      return indicatiebesluiten.filter(r => bepaalConcessiehouder(r)?.id === concessiehouderId);
+    }
+
+    const KG_IND_LEGACY = [['Grondslag 1', 'grondslag_1'], ['Grondslag 2', 'grondslag_2'], ['Grondslag 3', 'grondslag_3'], ['Grondslag 4', 'grondslag_4'], ['ZZP-code 1', 'zzp_code_1'], ['ZZP-code 2', 'zzp_code_2']];
+    function kgIndicatieKolommen() {
+      if (!kgIndicatieAlsKenmerk) return KG_IND_LEGACY.map(([kop, veld]) => ({ kop, waarde: r => r[veld] }));
+      return kgIndDefs.map(d => ({
+        kop: d.naam,
+        waarde: r => {
+          const inst = kgIndInstanties.find(i => i.scenario_id === r.scenario_id);
+          return inst ? kgIndWaarden.find(w => w.instantie_id === inst.id && w.kenmerk_definitie_id === d.id)?.waarde : '';
+        },
+      }));
+    }
+    function kgIndicatieKoppenBijwerken(cols) {
+      const kop = document.getElementById('kgIndicatieKop');
+      if (!kop) return;
+      kop.querySelectorAll('.kg-ind-th').forEach(el => el.remove());
+      const voorkeur = [...kop.children].find(th => th.textContent.trim() === 'VoorkeurClient');
+      if (voorkeur) voorkeur.insertAdjacentHTML('beforebegin', cols.map(c => `<th class="kg-ind-th">${esc(c.kop)}</th>`).join(''));
+    }
+
+    function renderKgIndicatieTable() {
+      const indKolommen = kgIndicatieKolommen();
+      kgIndicatieKoppenBijwerken(indKolommen);
+      vulKgIndicatieConcessiehouderFilter();
+      const tb = document.getElementById('kgIndicatieTable');
+      const gefilterd = gefilterdeIndicatiebesluiten();
+      if (!gefilterd.length) {
+        tb.innerHTML = `<tr><td colspan="20"><div class="empty-state"><p>${indicatiebesluiten.length ? 'Geen indicatiebesluiten voor deze concessiehouder.' : 'Nog geen indicatiebesluiten ingevuld.'}</p></div></td></tr>`;
+        return;
+      }
+      const fmtDatum = d => d ? new Date(d).toLocaleDateString('nl-NL') : '—';
+      const rijen = [...gefilterd].sort((a, b) => {
+        const codeA = scenarios.find(s => s.id === a.scenario_id)?.code || '';
+        const codeB = scenarios.find(s => s.id === b.scenario_id)?.code || '';
+        return codeA.localeCompare(codeB, undefined, { numeric: true });
+      });
+      tb.innerHTML = rijen.map(r => {
+        const scenario = scenarios.find(s => s.id === r.scenario_id);
+        const concessiehouder = bepaalConcessiehouder(r);
+        const pc = vindPostcodePlaats(r);
+        return `<tr>
+          <td><strong>${esc(scenario?.code || 'Onbekend')}</strong></td>
+          <td></td>
+          <td>${esc(r.fictief_bsn || '—')}</td>
+          <td></td>
+          <td>${fmtDatum(r.datum_afgifte)}</td>
+          <td>${fmtDatum(r.datum_ingang)}</td>
+          <td>${esc(concessiehouder?.name || '—')}</td>
+          <td>${esc(r.uzovi || '—')}</td>
+          <td>${esc(pc?.postcode || '—')}</td>
+          <td>${esc(pc?.plaats || '—')}</td>
+          <td>${esc(r.adres || '—')}</td>
+          ${indKolommen.map(c => `<td>${esc(c.waarde(r) || '—')}</td>`).join('')}
+          <td>${esc(r.voorkeur_client || '—')}</td>
+          <td>${esc(r.uzovi_uitvoerend_zk || '—')}</td>
+          <td>${esc(r.voorkeur_aanbieder || '—')}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function exporteerIndicatiebesluiten() {
+      const gefilterd = gefilterdeIndicatiebesluiten();
+      if (!gefilterd.length) { showAlert('Er zijn geen indicatiebesluiten om te exporteren.', 'error'); return; }
+      const rows = gefilterd.map(r => {
+        const scenario = scenarios.find(s => s.id === r.scenario_id);
+        const concessiehouder = bepaalConcessiehouder(r);
+        const pc = vindPostcodePlaats(r);
+        return {
+          Clientnaam: scenario?.code || '',
+          Clientnummer: '',
+          'Fictief BSN': r.fictief_bsn || '',
+          TechnischID: '',
+          'Datum afgifte': r.datum_afgifte || '',
+          'Datum ingang': r.datum_ingang || '',
+          Concessiehouder: concessiehouder?.name || '',
+          UZOVI: r.uzovi || '',
+          Postcode: pc?.postcode || '',
+          Plaats: pc?.plaats || '',
+          Adres: r.adres || '',
+          ...Object.fromEntries(kgIndicatieKolommen().map(c => [c.kop, c.waarde(r) || ''])),
+          VoorkeurClient: r.voorkeur_client || '',
+          'UZOVI-uitvoerendZK': r.uzovi_uitvoerend_zk || '',
+          VoorkeurAanbieder: r.voorkeur_aanbieder || '',
+        };
+      });
+      const ws = XLSX.utils.json_to_sheet(rows);
+      ws['!cols'] = [{ wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 16 }, { wch: 26 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 12 }, { wch: 12 }, { wch: 18 }, { wch: 18 }, { wch: 18 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Indicatiebesluiten');
+      const datumStamp = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, `indicatiebesluiten-${datumStamp}.xlsx`);
+    }
+
+    async function loadKerngegevens() {
+      // Alleen de activiteiten en indicatiebesluiten hebben de scenario-id's
+      // nodig; al het andere start meteen en loopt parallel met het ophalen van
+      // de scenario's.
+      const kid = activeKetentest.id;
+      const pOnafhankelijk = Promise.all([
+        sb.from('organisations').select('*'),
+        sb.from('organisatie_zorgkantoorcodes').select('*'),
+        sb.from('kerngegevens_uzovi_agb').select('*').eq('ketentest_id', kid),
+        sb.from('kerngegevens_whitelist_postcodes').select('*').eq('ketentest_id', kid),
+        fetchAllRows((from, to) => sb.from('kerngegevens_fictieve_bsn').select('*').eq('ketentest_id', kid).order('id').range(from, to)),
+      ]);
+      pOnafhankelijk.catch(() => {}); // voorkomt een 'unhandled rejection'-melding als dit pas later wordt afgewacht
+
+      const scenarioData = (await sb.from('scenarios').select('id,code').eq('ketentest_id', kid)).data || [];
+      scenarios = scenarioData;
+      const scenarioIds = scenarioData.map(s => s.id);
+
+      const [a, ind, [o, zk, kg, pc, bsn]] = await Promise.all([
+        scenarioIds.length ? fetchAllRows((from, to) => sb.from('activities').select('organisation_id,acceptant_org_id').in('scenario_id', scenarioIds).order('id').range(from, to)) : Promise.resolve({ data: [] }),
+        scenarioIds.length ? fetchAllRows((from, to) => sb.from('indicatiebesluiten').select('*').in('scenario_id', scenarioIds).order('id').range(from, to)) : Promise.resolve({ data: [] }),
+        pOnafhankelijk,
+      ]);
+      // Indicatie-kenmerken (nieuwe opzet)
+      kgIndicatieAlsKenmerk = false; kgIndDefs = []; kgIndInstanties = []; kgIndWaarden = [];
+      const groepRes = await sb.from('kenmerk_groepen').select('id').eq('sleutel', 'indicatie').maybeSingle();
+      if (!groepRes.error && groepRes.data) {
+        kgIndicatieAlsKenmerk = true;
+        const defRes = await sb.from('kenmerk_definities').select('*').eq('ketentest_id', kid).eq('groep', 'indicatie').order('volgorde').order('naam');
+        kgIndDefs = defRes.data || [];
+        if (kgIndDefs.length && scenarioIds.length) {
+          const inst = await fetchInChunks(scenarioIds, ids => sb.from('scenario_kenmerk_instanties').select('*').in('scenario_id', ids).eq('groep', 'indicatie').order('id'));
+          kgIndInstanties = inst.data || [];
+          const wrd = await fetchInChunks(kgIndInstanties.map(i => i.id), ids => sb.from('scenario_kenmerk_waarden').select('*').in('instantie_id', ids).order('instantie_id').order('kenmerk_definitie_id'));
+          kgIndWaarden = wrd.data || [];
+        }
+      }
+      orgs = o.data || [];
+      activities = a.data || [];
+      zorgkantoorcodes = zk.data || [];
+      kgUzoviAgbRijen = kg.data || [];
+      kgPostcodeRijen = pc.data || [];
+      kgBsnRijen = bsn.data || [];
+      indicatiebesluiten = ind.data || [];
+    }
+
+    (async () => {
+      const user = await requireAuth();
+      if (!user) return;
+      const profile = await getUserProfile(user.id);
+      currentUser = user;
+      currentProfile = profile;
+      window.isPageAdmin = profile?.role === 'admin';
+
+      refreshGlobalNokBadge(profile?.organisation_id);
+      refreshGonogoBadge(profile?.organisation_id, profile?.role);
+      refreshMijnActiesBadge(profile?.organisation_id);
+      document.getElementById('navUser').textContent = profile?.name || user.email;
+      effectiefOrgId = await renderNavOrgSwitcher(profile);
+      if (window.isPageAdmin) document.getElementById('adminLink').style.display = '';
+      const scenariosSlot = document.getElementById('navScenariosSlot');
+      if (scenariosSlot) scenariosSlot.innerHTML = scenariosLinkHtml(profile?.role, false);
+      updateKetentestHoofdlink(profile?.role, false);
+      const navDashboardLink = document.getElementById('navDashboardLink');
+      if (navDashboardLink && ['admin','manager','softwareleverancier'].includes(profile?.role)) navDashboardLink.style.display = '';
+
+      const result = await ensureActiveKetentest();
+      if (!result) return;
+      activeKetentest = result.active;
+
+      await loadKerngegevens();
+
+      if (window.isPageAdmin) {
+        document.getElementById('kgUzoviAgbForm').style.display = '';
+        vulKgOrgSelect();
+        document.getElementById('kgPostcodesForm').style.display = '';
+        vulKgPcOrgSelect();
+        document.getElementById('kgBsnForm').style.display = '';
+        vulKgBsnOrgSelect();
+      }
+      renderKgUzoviAgbTable();
+      renderKgPostcodesTable();
+      renderKgIndicatieTable();
+      renderKgBsnOverzicht();
+    })();
+
+    async function doLogout() {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <!-- Modal: rij bewerken -->
+  <div class="modal-overlay" id="modalKgEdit" style="display:none;" onclick="closeModalOverlay(event,'modalKgEdit')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Rij bewerken</h3>
+        <button class="btn btn-ghost btn-icon" onclick="closeModal('modalKgEdit')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="kgEditId">
+        <div class="form-group">
+          <label>Organisatie</label>
+          <select id="kgEditOrgSelect" onchange="vulKgEditUzoviOpties()"></select>
+        </div>
+        <div class="form-group">
+          <label>UZOVI-code</label>
+          <select id="kgEditUzoviSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>AGB-code (optioneel, 8 cijfers)</label>
+          <input type="text" id="kgEditAgbInput" maxlength="8" placeholder="12345678">
+        </div>
+        <div class="form-group">
+          <label>Model</label>
+          <select id="kgEditModelSelect">
+            <option value="estafette">Estafette</option>
+            <option value="netwerk">Netwerk</option>
+          </select>
+        </div>
+        <div id="alertKgEdit" class="alert" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalKgEdit')">Annuleren</button>
+        <button class="btn btn-primary" onclick="saveKgEdit()">Opslaan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: postcode-rij bewerken -->
+  <div class="modal-overlay" id="modalKgPcEdit" style="display:none;" onclick="closeModalOverlay(event,'modalKgPcEdit')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Rij bewerken</h3>
+        <button class="btn btn-ghost btn-icon" onclick="closeModal('modalKgPcEdit')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="kgPcEditId">
+        <div class="form-group">
+          <label>Organisatie</label>
+          <select id="kgPcEditOrgSelect" onchange="vulKgPcEditUzoviOpties()"></select>
+        </div>
+        <div class="form-group">
+          <label>UZOVI-code</label>
+          <select id="kgPcEditUzoviSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Postcode</label>
+          <input type="text" id="kgPcEditPostcodeInput" maxlength="6" placeholder="1111AA">
+        </div>
+        <div class="form-group">
+          <label>Plaats</label>
+          <input type="text" id="kgPcEditPlaatsInput">
+        </div>
+        <div class="form-group">
+          <label>Adres</label>
+          <input type="text" id="kgPcEditAdresInput">
+        </div>
+        <div id="alertKgPcEdit" class="alert" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalKgPcEdit')">Annuleren</button>
+        <button class="btn btn-primary" onclick="saveKgPcEdit()">Opslaan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: bevestiging -->
+  <div class="modal-overlay" id="modalConfirm" style="display:none;" onclick="closeModalOverlay(event,'modalConfirm')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header"><h3>Bevestigen</h3></div>
+      <div class="modal-body"><p id="confirmMsg"></p></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalConfirm')">Annuleren</button>
+        <button class="btn" style="background:var(--danger); color:#fff;" id="confirmBtn">Bevestigen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZIN Footer -->
+  <footer style="background:#39870c; margin-top:48px; padding:40px 24px;">
+    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; align-items:start;">
+      <div>
+        <p style="font-size:20px; font-style:italic; color:#fff; font-weight:400; line-height:1.5;">Ketentest platform<br>voor PGB</p>
+      </div>
+      <div>
+        <p style="font-size:14px; font-weight:600; color:#fff; margin-bottom:12px;">Service</p>
+        <p style="font-size:13px; color:rgba(255,255,255,0.85); line-height:2;">
+          Zorginstituut Nederland<br>
+          <a href="https://www.istandaarden.nl" style="color:rgba(255,255,255,0.85); text-decoration:none;">iStandaarden</a><br>
+          <a href="https://www.zinl.nl" style="color:rgba(255,255,255,0.85); text-decoration:none;">zinl.nl</a>
+        </p>
+      </div>
+      <div>
+        <p style="font-size:14px; font-weight:600; color:#fff; margin-bottom:12px;">Over deze tool</p>
+        <p style="font-size:13px; color:rgba(255,255,255,0.85); line-height:2;">
+          Ketentestmonitor PGB<br>
+          Versie 0.9<br>
+          <a href="releasenotes.html" style="color:rgba(255,255,255,0.85); text-decoration:none;">Releasenotes</a>
+        </p>
+      </div>
+    </div>
+    <div style="max-width:1100px; margin:24px auto 0; padding-top:16px; border-top:1px solid rgba(255,255,255,0.2);">
+      <p style="font-size:12px; color:rgba(255,255,255,0.6);">© Zorginstituut Nederland</p>
+    </div>
+  </footer>
+
+</body>
+</html>
